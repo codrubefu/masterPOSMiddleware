@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class ArticleController extends Controller
 {
     /**
-     * Search for articles
+     * Search for products
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -19,88 +19,92 @@ class ArticleController extends Controller
         $category = $request->get('category', '');
         $limit = $request->get('limit', 10);
 
-        // Demo articles data
-        $demoArticles = [
+        // Demo products data
+        $demoProducts = [
             [
                 'id' => 1,
-                'title' => 'Getting Started with Laravel',
-                'content' => 'Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling.',
-                'category' => 'Technology',
-                'author' => 'John Doe',
-                'published_at' => '2024-01-15',
-                'tags' => ['Laravel', 'PHP', 'Web Development'],
-                'image_url' => 'https://example.com/images/laravel-guide.jpg'
+                'name' => 'Cafea boabe 1kg',
+                'upc' => '5941234567890',
+                'price' => 79.90,
+                'quantity' => 50
             ],
             [
                 'id' => 2,
-                'title' => 'Advanced PHP Techniques',
-                'content' => 'Explore advanced PHP programming techniques including design patterns, performance optimization, and modern PHP features.',
-                'category' => 'Technology',
-                'author' => 'Jane Smith',
-                'published_at' => '2024-02-20',
-                'tags' => ['PHP', 'Programming', 'Best Practices'],
-                'image_url' => 'https://example.com/images/php-advanced.jpg'
+                'name' => 'Lapte 1L',
+                'upc' => '5940987654321',
+                'price' => 5.49,
+                'quantity' => 120
             ],
             [
                 'id' => 3,
-                'title' => 'Database Design Best Practices',
-                'content' => 'Learn how to design efficient and scalable databases with proper indexing, normalization, and optimization techniques.',
-                'category' => 'Database',
-                'author' => 'Mike Johnson',
-                'published_at' => '2024-03-10',
-                'tags' => ['Database', 'MySQL', 'Optimization'],
-                'image_url' => 'https://example.com/images/database-design.jpg'
+                'name' => 'Pâine integrală',
+                'upc' => '5940001112223',
+                'price' => 8.25,
+                'quantity' => 30
             ],
             [
                 'id' => 4,
-                'title' => 'RESTful API Development',
-                'content' => 'Master the art of building RESTful APIs with proper HTTP methods, status codes, and API documentation.',
-                'category' => 'API',
-                'author' => 'Sarah Wilson',
-                'published_at' => '2024-04-05',
-                'tags' => ['API', 'REST', 'Web Services'],
-                'image_url' => 'https://example.com/images/api-development.jpg'
+                'name' => 'Ciocolată neagră 85%',
+                'upc' => '5945557770001',
+                'price' => 12.35,
+                'quantity' => 75
             ],
             [
                 'id' => 5,
-                'title' => 'Frontend Frameworks Comparison',
-                'content' => 'A comprehensive comparison of popular frontend frameworks including React, Vue.js, and Angular.',
-                'category' => 'Frontend',
-                'author' => 'David Brown',
-                'published_at' => '2024-05-12',
-                'tags' => ['Frontend', 'React', 'Vue.js', 'Angular'],
-                'image_url' => 'https://example.com/images/frontend-frameworks.jpg'
+                'name' => 'Ulei de măsline extra virgin 750ml',
+                'upc' => '5942228889999',
+                'price' => 42.50,
+                'quantity' => 25
+            ],
+            [
+                'id' => 6,
+                'name' => 'Apă minerală 2L',
+                'upc' => '5940123456789',
+                'price' => 3.99,
+                'quantity' => 200
+            ],
+            [
+                'id' => 7,
+                'name' => 'Brânză telemea 500g',
+                'upc' => '5940987123456',
+                'price' => 15.80,
+                'quantity' => 40
+            ],
+            [
+                'id' => 8,
+                'name' => 'Cereale pentru mic dejun 375g',
+                'upc' => '5941111222333',
+                'price' => 18.90,
+                'quantity' => 60
             ]
         ];
 
-        // Filter articles based on search parameters
-        $filteredArticles = collect($demoArticles);
+        // Filter products based on search parameters
+        $filteredProducts = collect($demoProducts);
 
-        // Filter by query (search in title and content)
+        // Filter by query (search in name and UPC)
         if (!empty($query)) {
-            $filteredArticles = $filteredArticles->filter(function ($article) use ($query) {
-                return stripos($article['title'], $query) !== false ||
-                       stripos($article['content'], $query) !== false ||
-                       in_array($query, array_map('strtolower', $article['tags']));
+            $filteredProducts = $filteredProducts->filter(function ($product) use ($query) {
+                return stripos($product['name'], $query) !== false ||
+                       stripos($product['upc'], $query) !== false;
             });
         }
 
-        // Filter by category
+        // Filter by category (not applicable for products, but keeping for API compatibility)
         if (!empty($category)) {
-            $filteredArticles = $filteredArticles->filter(function ($article) use ($category) {
-                return stripos($article['category'], $category) !== false;
-            });
+            // You could implement product categories here if needed
+            // For now, we'll just ignore this filter for products
         }
 
         // Limit results
-        $filteredArticles = $filteredArticles->take($limit);
+        $filteredProducts = $filteredProducts->take($limit);
 
         return response()->json([
             'success' => true,
-            'message' => 'Articles retrieved successfully',
+            'message' => 'Products retrieved successfully',
             'data' => [
-                'articles' => $filteredArticles->values(),
-                'total' => $filteredArticles->count(),
+                'products' => $filteredProducts->values(),
+                'total' => $filteredProducts->count(),
                 'search_params' => [
                     'query' => $query,
                     'category' => $category,
@@ -111,95 +115,91 @@ class ArticleController extends Controller
     }
 
     /**
-     * Get a single article by ID
+     * Get a single product by ID
      *
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        // Demo articles data (same as above for consistency)
-        $demoArticles = [
+        // Demo products data (same as above for consistency)
+        $demoProducts = [
             1 => [
                 'id' => 1,
-                'title' => 'Getting Started with Laravel',
-                'content' => 'Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects.',
-                'category' => 'Technology',
-                'author' => 'John Doe',
-                'published_at' => '2024-01-15',
-                'tags' => ['Laravel', 'PHP', 'Web Development'],
-                'image_url' => 'https://example.com/images/laravel-guide.jpg',
-                'read_time' => '5 minutes',
-                'views' => 1250
+                'name' => 'Cafea boabe 1kg',
+                'upc' => '5941234567890',
+                'price' => 79.90,
+                'quantity' => 50
             ],
             2 => [
                 'id' => 2,
-                'title' => 'Advanced PHP Techniques',
-                'content' => 'Explore advanced PHP programming techniques including design patterns, performance optimization, and modern PHP features. This comprehensive guide covers everything from SOLID principles to advanced OOP concepts.',
-                'category' => 'Technology',
-                'author' => 'Jane Smith',
-                'published_at' => '2024-02-20',
-                'tags' => ['PHP', 'Programming', 'Best Practices'],
-                'image_url' => 'https://example.com/images/php-advanced.jpg',
-                'read_time' => '8 minutes',
-                'views' => 890
+                'name' => 'Lapte 1L',
+                'upc' => '5940987654321',
+                'price' => 5.49,
+                'quantity' => 120
             ],
             3 => [
                 'id' => 3,
-                'title' => 'Database Design Best Practices',
-                'content' => 'Learn how to design efficient and scalable databases with proper indexing, normalization, and optimization techniques. Understand the principles of good database architecture.',
-                'category' => 'Database',
-                'author' => 'Mike Johnson',
-                'published_at' => '2024-03-10',
-                'tags' => ['Database', 'MySQL', 'Optimization'],
-                'image_url' => 'https://example.com/images/database-design.jpg',
-                'read_time' => '12 minutes',
-                'views' => 2100
+                'name' => 'Pâine integrală',
+                'upc' => '5940001112223',
+                'price' => 8.25,
+                'quantity' => 30
             ],
             4 => [
                 'id' => 4,
-                'title' => 'RESTful API Development',
-                'content' => 'Master the art of building RESTful APIs with proper HTTP methods, status codes, and API documentation. Learn best practices for API versioning and authentication.',
-                'category' => 'API',
-                'author' => 'Sarah Wilson',
-                'published_at' => '2024-04-05',
-                'tags' => ['API', 'REST', 'Web Services'],
-                'image_url' => 'https://example.com/images/api-development.jpg',
-                'read_time' => '10 minutes',
-                'views' => 1680
+                'name' => 'Ciocolată neagră 85%',
+                'upc' => '5945557770001',
+                'price' => 12.35,
+                'quantity' => 75
             ],
             5 => [
                 'id' => 5,
-                'title' => 'Frontend Frameworks Comparison',
-                'content' => 'A comprehensive comparison of popular frontend frameworks including React, Vue.js, and Angular. Understand the pros and cons of each framework.',
-                'category' => 'Frontend',
-                'author' => 'David Brown',
-                'published_at' => '2024-05-12',
-                'tags' => ['Frontend', 'React', 'Vue.js', 'Angular'],
-                'image_url' => 'https://example.com/images/frontend-frameworks.jpg',
-                'read_time' => '15 minutes',
-                'views' => 3200
+                'name' => 'Ulei de măsline extra virgin 750ml',
+                'upc' => '5942228889999',
+                'price' => 42.50,
+                'quantity' => 25
+            ],
+            6 => [
+                'id' => 6,
+                'name' => 'Apă minerală 2L',
+                'upc' => '5940123456789',
+                'price' => 3.99,
+                'quantity' => 200
+            ],
+            7 => [
+                'id' => 7,
+                'name' => 'Brânză telemea 500g',
+                'upc' => '5940987123456',
+                'price' => 15.80,
+                'quantity' => 40
+            ],
+            8 => [
+                'id' => 8,
+                'name' => 'Cereale pentru mic dejun 375g',
+                'upc' => '5941111222333',
+                'price' => 18.90,
+                'quantity' => 60
             ]
         ];
 
-        // Find article by ID
-        if (!isset($demoArticles[$id])) {
+        // Find product by ID
+        if (!isset($demoProducts[$id])) {
             return response()->json([
                 'success' => false,
-                'message' => 'Article not found',
+                'message' => 'Product not found',
                 'data' => null
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Article retrieved successfully',
-            'data' => $demoArticles[$id]
+            'message' => 'Product retrieved successfully',
+            'data' => $demoProducts[$id]
         ]);
     }
 
     /**
-     * Get all articles
+     * Get all products
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
@@ -209,69 +209,75 @@ class ArticleController extends Controller
         $page = $request->get('page', 1);
         $perPage = $request->get('per_page', 10);
 
-        // Demo articles data
-        $demoArticles = [
+        // Demo products data
+        $demoProducts = [
             [
                 'id' => 1,
-                'title' => 'Getting Started with Laravel',
-                'content' => 'Laravel is a web application framework with expressive, elegant syntax...',
-                'category' => 'Technology',
-                'author' => 'John Doe',
-                'published_at' => '2024-01-15',
-                'tags' => ['Laravel', 'PHP', 'Web Development'],
-                'image_url' => 'https://example.com/images/laravel-guide.jpg'
+                'name' => 'Cafea boabe 1kg',
+                'upc' => '5941234567890',
+                'price' => 79.90,
+                'quantity' => 50
             ],
             [
                 'id' => 2,
-                'title' => 'Advanced PHP Techniques',
-                'content' => 'Explore advanced PHP programming techniques...',
-                'category' => 'Technology',
-                'author' => 'Jane Smith',
-                'published_at' => '2024-02-20',
-                'tags' => ['PHP', 'Programming', 'Best Practices'],
-                'image_url' => 'https://example.com/images/php-advanced.jpg'
+                'name' => 'Lapte 1L',
+                'upc' => '5940987654321',
+                'price' => 5.49,
+                'quantity' => 120
             ],
             [
                 'id' => 3,
-                'title' => 'Database Design Best Practices',
-                'content' => 'Learn how to design efficient and scalable databases...',
-                'category' => 'Database',
-                'author' => 'Mike Johnson',
-                'published_at' => '2024-03-10',
-                'tags' => ['Database', 'MySQL', 'Optimization'],
-                'image_url' => 'https://example.com/images/database-design.jpg'
+                'name' => 'Pâine integrală',
+                'upc' => '5940001112223',
+                'price' => 8.25,
+                'quantity' => 30
             ],
             [
                 'id' => 4,
-                'title' => 'RESTful API Development',
-                'content' => 'Master the art of building RESTful APIs...',
-                'category' => 'API',
-                'author' => 'Sarah Wilson',
-                'published_at' => '2024-04-05',
-                'tags' => ['API', 'REST', 'Web Services'],
-                'image_url' => 'https://example.com/images/api-development.jpg'
+                'name' => 'Ciocolată neagră 85%',
+                'upc' => '5945557770001',
+                'price' => 12.35,
+                'quantity' => 75
             ],
             [
                 'id' => 5,
-                'title' => 'Frontend Frameworks Comparison',
-                'content' => 'A comprehensive comparison of popular frontend frameworks...',
-                'category' => 'Frontend',
-                'author' => 'David Brown',
-                'published_at' => '2024-05-12',
-                'tags' => ['Frontend', 'React', 'Vue.js', 'Angular'],
-                'image_url' => 'https://example.com/images/frontend-frameworks.jpg'
+                'name' => 'Ulei de măsline extra virgin 750ml',
+                'upc' => '5942228889999',
+                'price' => 42.50,
+                'quantity' => 25
+            ],
+            [
+                'id' => 6,
+                'name' => 'Apă minerală 2L',
+                'upc' => '5940123456789',
+                'price' => 3.99,
+                'quantity' => 200
+            ],
+            [
+                'id' => 7,
+                'name' => 'Brânză telemea 500g',
+                'upc' => '5940987123456',
+                'price' => 15.80,
+                'quantity' => 40
+            ],
+            [
+                'id' => 8,
+                'name' => 'Cereale pentru mic dejun 375g',
+                'upc' => '5941111222333',
+                'price' => 18.90,
+                'quantity' => 60
             ]
         ];
 
-        $total = count($demoArticles);
+        $total = count($demoProducts);
         $offset = ($page - 1) * $perPage;
-        $articles = array_slice($demoArticles, $offset, $perPage);
+        $products = array_slice($demoProducts, $offset, $perPage);
 
         return response()->json([
             'success' => true,
-            'message' => 'Articles retrieved successfully',
+            'message' => 'Products retrieved successfully',
             'data' => [
-                'articles' => $articles,
+                'products' => $products,
                 'pagination' => [
                     'current_page' => $page,
                     'per_page' => $perPage,
