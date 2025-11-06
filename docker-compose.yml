@@ -17,7 +17,7 @@ services:
     environment:
       - DB_CONNECTION=sqlsrv
       - DB_HOST=sqlserver
-      - DB_PORT=1433
+      - DB_PORT=1434
       - DB_DATABASE=laravel
       - DB_USERNAME=sa
       - DB_PASSWORD=YourStrong!Passw0rd
@@ -26,7 +26,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: sql-server-pos
     ports:
-      - "1433:1433"
+      - "1434:1433"
     environment:
       SA_PASSWORD: "YourStrong!Passw0rd"
       ACCEPT_EULA: "Y"

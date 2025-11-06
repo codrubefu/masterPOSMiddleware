@@ -61,7 +61,8 @@ class ArticleController extends Controller
                 'name' => 'Apă minerală 2L',
                 'upc' => '5940123456789',
                 'price' => 3.99,
-                'quantity' => 200
+                'quantity' => 200,
+                'sgr' => true
             ],
             [
                 'id' => 7,
@@ -76,6 +77,22 @@ class ArticleController extends Controller
                 'upc' => '5941111222333',
                 'price' => 18.90,
                 'quantity' => 60
+            ],
+            [
+                'id' => 9,
+                'name' => 'Coca cola 2L',
+                'upc' => '5944445556667',
+                'price' => 25.00,
+                'quantity' => 80,
+                'sgr' => true
+            ],
+            [
+                'id' => 10,
+                'name' => 'Fanta portocale 2L',
+                'upc' => '5947778889990',
+                'price' => 10.50,
+                'quantity' => 90,
+                'sgr' => true
             ]
         ];
 
@@ -164,7 +181,8 @@ class ArticleController extends Controller
                 'name' => 'Apă minerală 2L',
                 'upc' => '5940123456789',
                 'price' => 3.99,
-                'quantity' => 200
+                'quantity' => 200,
+                'sgr' => true
             ],
             7 => [
                 'id' => 7,
@@ -179,6 +197,22 @@ class ArticleController extends Controller
                 'upc' => '5941111222333',
                 'price' => 18.90,
                 'quantity' => 60
+            ],
+            9 => [
+                'id' => 9,
+                'name' => 'Coca cola 2L',
+                'upc' => '5944445556667',
+                'price' => 25.00,
+                'quantity' => 80,
+                'sgr' => true
+            ],
+            10 => [
+                'id' => 10,
+                'name' => 'Fanta portocale 2L',
+                'upc' => '5947778889990',
+                'price' => 10.50,
+                'quantity' => 90,
+                'sgr' => true
             ]
         ];
 

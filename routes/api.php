@@ -26,6 +26,11 @@ Route::prefix('articles')->group(function () {
     Route::get('/{id}', [ArticleController::class, 'show']);
 });
 
+// Customer routes (public)
+Route::prefix('customers')->group(function () {
+    Route::get('/{id}', [\App\Http\Controllers\CustomerController::class, 'show']);
+});
+
 // Protected API routes that require secret
 Route::middleware('api.secret')->group(function () {
     
