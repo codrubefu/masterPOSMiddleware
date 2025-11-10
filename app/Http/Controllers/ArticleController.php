@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\UpcGenprod;
 use Illuminate\Http\Request;
 use App\Models\TrzBoncurdel;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller
 {
@@ -26,14 +28,21 @@ class ArticleController extends Controller
      * Get a single product by ID
      *
      * @param string $id
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show($id, Request $request)
     {
         $product = UpcGenprod::findByUpc($id)->first();
         
         if (!$product) {
             return $this->jsonResponse(null, 'Product not found', false, 404);
+        }
+
+        // Write URL to text file based on casa parameter
+        $casa = $request->get('casa');
+        if ($casa) {
+            $this->writeCasaFile($casa, $request);
         }
         
         return $this->jsonResponse(
@@ -158,6 +167,41 @@ class ArticleController extends Controller
         $minPrice = min($priceValues);
 
         return $quantity < 6 ? $maxPrice : $minPrice;
+    }
+
+    /**
+     * Write URL to text file based on casa parameter
+     *
+     * @param int|string $casa
+     * @return void
+     */
+    protected function writeCasaFile($casa,$data)
+    {
+        $casaFiles = config('casa.file');
+        
+        // Validate casa parameter
+        if (!isset($casaFiles[$casa])) {
+            Log::warning("Invalid casa parameter: {$casa}");
+            return;
+        }
+
+        // Get file configuration
+        $filePath = $casaFiles[$casa]['path'];
+        $fileName = $casaFiles[$casa]['name'];
+        $fullPath = $filePath . DIRECTORY_SEPARATOR . $fileName;
+
+        // Create directory if it doesn't exist
+        if (!File::exists($filePath)) {
+            File::makeDirectory($filePath, 0755, true);
+        }
+
+        // Get the URL for the specified casa
+        $text = $data->get('name','');
+
+        // Write URL to file
+        File::put($fullPath,    $text);
+
+        Log::info("Casa file written: {$fullPath} with URL: {$text}");
     }
 
     /**
