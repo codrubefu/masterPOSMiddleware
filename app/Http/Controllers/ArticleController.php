@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UpcGenprod;
 use Illuminate\Http\Request;
+use App\Models\TrzBoncurdel;
 
 class ArticleController extends Controller
 {
@@ -14,222 +16,30 @@ class ArticleController extends Controller
      */
     public function search(Request $request)
     {
-        // Get search parameters
         $query = $request->get('query', '');
-        $category = $request->get('category', '');
-        $limit = $request->get('limit', 10);
-
-        // Demo products data
-        $demoProducts = [
-            [
-                'id' => 1,
-                'name' => 'Cafea boabe 1kg',
-                'upc' => '5941234567890',
-                'price' => 79.90,
-                'quantity' => 50
-            ],
-            [
-                'id' => 2,
-                'name' => 'Lapte 1L',
-                'upc' => '5940987654321',
-                'price' => 5.49,
-                'quantity' => 120
-            ],
-            [
-                'id' => 3,
-                'name' => 'Pâine integrală',
-                'upc' => '5940001112223',
-                'price' => 8.25,
-                'quantity' => 30
-            ],
-            [
-                'id' => 4,
-                'name' => 'Ciocolată neagră 85%',
-                'upc' => '5945557770001',
-                'price' => 12.35,
-                'quantity' => 75
-            ],
-            [
-                'id' => 5,
-                'name' => 'Ulei de măsline extra virgin 750ml',
-                'upc' => '5942228889999',
-                'price' => 42.50,
-                'quantity' => 25
-            ],
-            [
-                'id' => 6,
-                'name' => 'Apă minerală 2L',
-                'upc' => '5940123456789',
-                'price' => 3.99,
-                'quantity' => 200,
-                'sgr' => true
-            ],
-            [
-                'id' => 7,
-                'name' => 'Brânză telemea 500g',
-                'upc' => '5940987123456',
-                'price' => 15.80,
-                'quantity' => 40
-            ],
-            [
-                'id' => 8,
-                'name' => 'Cereale pentru mic dejun 375g',
-                'upc' => '5941111222333',
-                'price' => 18.90,
-                'quantity' => 60
-            ],
-            [
-                'id' => 9,
-                'name' => 'Coca cola 2L',
-                'upc' => '5944445556667',
-                'price' => 25.00,
-                'quantity' => 80,
-                'sgr' => true
-            ],
-            [
-                'id' => 10,
-                'name' => 'Fanta portocale 2L',
-                'upc' => '5947778889990',
-                'price' => 10.50,
-                'quantity' => 90,
-                'sgr' => true
-            ]
-        ];
-
-        // Filter products based on search parameters
-        $filteredProducts = collect($demoProducts);
-
-        // Filter by query (search in name and UPC)
-        if (!empty($query)) {
-            $filteredProducts = $filteredProducts->filter(function ($product) use ($query) {
-                return stripos($product['name'], $query) !== false ||
-                       stripos($product['upc'], $query) !== false;
-            });
-        }
-
-        // Filter by category (not applicable for products, but keeping for API compatibility)
-        if (!empty($category)) {
-            // You could implement product categories here if needed
-            // For now, we'll just ignore this filter for products
-        }
-
-        // Limit results
-        $filteredProducts = $filteredProducts->take($limit);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Products retrieved successfully',
-            'data' => [
-                'products' => $filteredProducts->values(),
-                'total' => $filteredProducts->count(),
-                'search_params' => [
-                    'query' => $query,
-                    'category' => $category,
-                    'limit' => $limit
-                ]
-            ]
-        ]);
+        $product = UpcGenprod::findByUpc($query)->first();
+    
+        return $this->jsonResponse($product, 'Product retrieved successfully');
     }
 
     /**
      * Get a single product by ID
      *
-     * @param int $id
+     * @param string $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function show($id)
     {
-        // Demo products data (same as above for consistency)
-        $demoProducts = [
-            1 => [
-                'id' => 1,
-                'name' => 'Cafea boabe 1kg',
-                'upc' => '5941234567890',
-                'price' => 79.90,
-                'quantity' => 50
-            ],
-            2 => [
-                'id' => 2,
-                'name' => 'Lapte 1L',
-                'upc' => '5940987654321',
-                'price' => 5.49,
-                'quantity' => 120
-            ],
-            3 => [
-                'id' => 3,
-                'name' => 'Pâine integrală',
-                'upc' => '5940001112223',
-                'price' => 8.25,
-                'quantity' => 30
-            ],
-            4 => [
-                'id' => 4,
-                'name' => 'Ciocolată neagră 85%',
-                'upc' => '5945557770001',
-                'price' => 12.35,
-                'quantity' => 75
-            ],
-            5 => [
-                'id' => 5,
-                'name' => 'Ulei de măsline extra virgin 750ml',
-                'upc' => '5942228889999',
-                'price' => 42.50,
-                'quantity' => 25
-            ],
-            6 => [
-                'id' => 6,
-                'name' => 'Apă minerală 2L',
-                'upc' => '5940123456789',
-                'price' => 3.99,
-                'quantity' => 200,
-                'sgr' => true
-            ],
-            7 => [
-                'id' => 7,
-                'name' => 'Brânză telemea 500g',
-                'upc' => '5940987123456',
-                'price' => 15.80,
-                'quantity' => 40
-            ],
-            8 => [
-                'id' => 8,
-                'name' => 'Cereale pentru mic dejun 375g',
-                'upc' => '5941111222333',
-                'price' => 18.90,
-                'quantity' => 60
-            ],
-            9 => [
-                'id' => 9,
-                'name' => 'Coca cola 2L',
-                'upc' => '5944445556667',
-                'price' => 25.00,
-                'quantity' => 80,
-                'sgr' => true
-            ],
-            10 => [
-                'id' => 10,
-                'name' => 'Fanta portocale 2L',
-                'upc' => '5947778889990',
-                'price' => 10.50,
-                'quantity' => 90,
-                'sgr' => true
-            ]
-        ];
-
-        // Find product by ID
-        if (!isset($demoProducts[$id])) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Product not found',
-                'data' => null
-            ], 404);
+        $product = UpcGenprod::findByUpc($id)->first();
+        
+        if (!$product) {
+            return $this->jsonResponse(null, 'Product not found', false, 404);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Product retrieved successfully',
-            'data' => $demoProducts[$id]
-        ]);
+        
+        return $this->jsonResponse(
+            $this->formatProduct($product, 1),
+            'Product retrieved successfully'
+        );
     }
 
     /**
@@ -240,87 +50,131 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->get('page', 1);
-        $perPage = $request->get('per_page', 10);
+        $query = $request->get('query', '');
+        $product = UpcGenprod::findByUpc($query)->first();
+    
+        return $this->jsonResponse($product, 'Product retrieved successfully');
+    }
 
-        // Demo products data
-        $demoProducts = [
-            [
-                'id' => 1,
-                'name' => 'Cafea boabe 1kg',
-                'upc' => '5941234567890',
-                'price' => 79.90,
-                'quantity' => 50
-            ],
-            [
-                'id' => 2,
-                'name' => 'Lapte 1L',
-                'upc' => '5940987654321',
-                'price' => 5.49,
-                'quantity' => 120
-            ],
-            [
-                'id' => 3,
-                'name' => 'Pâine integrală',
-                'upc' => '5940001112223',
-                'price' => 8.25,
-                'quantity' => 30
-            ],
-            [
-                'id' => 4,
-                'name' => 'Ciocolată neagră 85%',
-                'upc' => '5945557770001',
-                'price' => 12.35,
-                'quantity' => 75
-            ],
-            [
-                'id' => 5,
-                'name' => 'Ulei de măsline extra virgin 750ml',
-                'upc' => '5942228889999',
-                'price' => 42.50,
-                'quantity' => 25
-            ],
-            [
-                'id' => 6,
-                'name' => 'Apă minerală 2L',
-                'upc' => '5940123456789',
-                'price' => 3.99,
-                'quantity' => 200
-            ],
-            [
-                'id' => 7,
-                'name' => 'Brânză telemea 500g',
-                'upc' => '5940987123456',
-                'price' => 15.80,
-                'quantity' => 40
-            ],
-            [
-                'id' => 8,
-                'name' => 'Cereale pentru mic dejun 375g',
-                'upc' => '5941111222333',
-                'price' => 18.90,
-                'quantity' => 60
-            ]
+    /**
+     * Update a product (returns product with quantity-based pricing)
+     *
+     * @param Request $request
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, $id)
+    {
+        $product = UpcGenprod::findByUpc($id)->first();
+        
+        if (!$product) {
+            return $this->jsonResponse(null, 'Product not found', false, 404);
+        }
+        
+        $quantity = $request->get('qty', 1);
+        
+        return $this->jsonResponse(
+            $this->formatProduct($product, $quantity),
+            'Product updated successfully'
+        );
+    }
+
+    /**
+     * Delete a product
+     *
+     * @param string $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function delete($id, Request $request)
+    {
+        $product = UpcGenprod::findByUpc($id)->first();
+        
+        if (!$product) {
+            return $this->jsonResponse(null, 'Product not found', false, 404);
+        }
+
+        $trzBoncurdel = new TrzBoncurdel();
+        $trzBoncurdel->idfirma = $product->idfirma;
+        $trzBoncurdel->idcl = 0;
+        $trzBoncurdel->art = $product->art;
+        $trzBoncurdel->cant = $request->get('qty', 1);
+        $trzBoncurdel->pretu = $request->get('price', 0.00);
+        $trzBoncurdel->redabs = 0.00;
+        $trzBoncurdel->redproc = 0.00;
+        $trzBoncurdel->tipv = 'RON';
+        $trzBoncurdel->data = now();
+        $trzBoncurdel->utilizator = 'CASA';
+        $trzBoncurdel->clasa = str_pad('', 30, ' ');
+        $trzBoncurdel->grupa = str_pad('', 20, ' ');
+        $trzBoncurdel->puncte = 0.00;
+        $trzBoncurdel->casa = 1;
+        $trzBoncurdel->datac = now();
+        $trzBoncurdel->tip = TrzBoncurdel::TYPE_STERGERE;
+        $trzBoncurdel->save();
+        
+        return $this->jsonResponse(
+            $this->formatProduct($product, 1),
+            'Product deleted successfully'
+        );
+    }
+
+    /**
+     * Format product data with pricing
+     *
+     * @param UpcGenprod $product
+     * @param int $quantity
+     * @return array
+     */
+    protected function formatProduct($product, $quantity = 1)
+    {
+        $prices = $product->prices->toArray();
+        return [
+            'id' => $product->upc,
+            'name' => $product->art,
+            'upc' => $product->upc,
+            'price' => $this->getPrice($quantity, $prices),
+            'quantity' => $quantity,
+            'sgr' => $product->ambsgr
         ];
+    }
 
-        $total = count($demoProducts);
-        $offset = ($page - 1) * $perPage;
-        $products = array_slice($demoProducts, $offset, $perPage);
+    /**
+     * Get the appropriate price based on quantity
+     * If quantity < 6, return higher price
+     * If quantity >= 6, return lower price
+     *
+     * @param int $quantity
+     * @param array $prices
+     * @return float|null
+     */
+    protected function getPrice($quantity, $prices)
+    {
+        if (empty($prices)) {
+            return null;
+        }
 
+        $priceValues = array_column($prices, 'pret');
+        $maxPrice = max($priceValues);
+        $minPrice = min($priceValues);
+
+        return $quantity < 6 ? $maxPrice : $minPrice;
+    }
+
+    /**
+     * Standard JSON response format
+     *
+     * @param mixed $data
+     * @param string $message
+     * @param bool $success
+     * @param int $statusCode
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function jsonResponse($data, $message, $success = true, $statusCode = 200)
+    {
         return response()->json([
-            'success' => true,
-            'message' => 'Products retrieved successfully',
-            'data' => [
-                'products' => $products,
-                'pagination' => [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total' => $total,
-                    'last_page' => ceil($total / $perPage),
-                    'from' => $offset + 1,
-                    'to' => min($offset + $perPage, $total)
-                ]
-            ]
-        ]);
+            'success' => $success,
+            'message' => $message,
+            'data' => $data
+        ], $statusCode);
     }
 }

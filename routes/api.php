@@ -24,6 +24,8 @@ Route::prefix('articles')->group(function () {
     Route::get('/', [ArticleController::class, 'index']);
     Route::get('/search', [ArticleController::class, 'search']);
     Route::get('/{id}', [ArticleController::class, 'show']);
+    Route::put('/{id}', [ArticleController::class, 'update']);
+    Route::delete('/{id}', [ArticleController::class, 'delete']);
 });
 
 // Customer routes (public)
