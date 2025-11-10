@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\RapoarteController;
+use App\Http\Controllers\PaymentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +33,18 @@ Route::prefix('articles')->group(function () {
 // Customer routes (public)
 Route::prefix('customers')->group(function () {
     Route::get('/{id}', [\App\Http\Controllers\CustomerController::class, 'show']);
+});
+
+// Rapoarte routes (public)
+Route::prefix('rapoarte')->group(function () {
+    Route::post('/generate-x', [RapoarteController::class, 'generateX']);
+    Route::post('/generate-z', [RapoarteController::class, 'generateZ']);
+});
+
+// Payments routes (public)
+Route::prefix('payments')->group(function () {
+    Route::post('/subtotal', [PaymentsController::class, 'subTotal']);
+    Route::post('/payment', [PaymentsController::class, 'payment']);
 });
 
 // Protected API routes that require secret
