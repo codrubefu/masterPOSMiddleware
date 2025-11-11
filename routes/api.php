@@ -45,6 +45,7 @@ Route::prefix('rapoarte')->group(function () {
 Route::prefix('payments')->group(function () {
     Route::post('/subtotal', [PaymentsController::class, 'subTotal']);
     Route::post('/payment', [PaymentsController::class, 'payment']);
+    Route::post('/is-payment-done', [PaymentsController::class, 'isPaymentDone']);
 });
 
 // Protected API routes that require secret

@@ -51,12 +51,15 @@ class PaymentsController extends Controller
             // TODO: Implement payment logic
             
             Log::info('Payment processing requested', $request->all());
-            
+            $bonNo = file_get_contents(base_path('bon'));
+            $currentBon = intval($bonNo)+1;
+            file_put_contents(base_path('bon'), $currentBon);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Payment processed successfully',
                 'data' => [
-                    'payment_id' => uniqid('payment_'),
+                    'bon_no' => $currentBon,
                     'processed_at' => now()->toDateTimeString(),
                 ]
             ], 200);
@@ -69,5 +72,14 @@ class PaymentsController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function isPaymentDone(Request $request)
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Test payment endpoint is working',
+            'data' => []
+        ], 200);
     }
 }
