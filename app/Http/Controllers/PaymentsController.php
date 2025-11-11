@@ -76,8 +76,11 @@ class PaymentsController extends Controller
 
     public function isPaymentDone(Request $request)
     {
+        // Random success: 20% true, 80% false
+        $success = rand(1, 100) <= 20;
+        
         return response()->json([
-            'success' => false,
+            'success' => $success,
             'message' => 'Test payment endpoint is working',
             'data' => []
         ], 200);
