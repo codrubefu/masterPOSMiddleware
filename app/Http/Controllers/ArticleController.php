@@ -5,11 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\UpcGenprod;
 use Illuminate\Http\Request;
 use App\Models\TrzBoncurdel;
+use App\Services\BonService;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller
 {
+
+    protected $bonService;
+
+    public function __construct()
+    {
+        $this->bonService = new BonService();
+    }
+
     /**
      * Search for products
      *
@@ -42,7 +51,7 @@ class ArticleController extends Controller
         // Write URL to text file based on casa parameter
         $casa = $request->get('casa');
         if ($casa) {
-            $this->writeCasaFile($casa, $request);
+            $this->bonService->writeNewEntry($casa, $this->formatProduct($product, 1));
         }
         
         return $this->jsonResponse(
@@ -81,7 +90,11 @@ class ArticleController extends Controller
         }
         
         $quantity = $request->get('qty', 1);
-        
+        $casa = $request->get('casa');
+        if ($casa) {
+            $this->bonService->writeNewEntry($casa, $this->formatProduct($product, $quantity));
+        }
+
         return $this->jsonResponse(
             $this->formatProduct($product, $quantity),
             'Product updated successfully'
@@ -169,40 +182,6 @@ class ArticleController extends Controller
         return $quantity < 6 ? $maxPrice : $minPrice;
     }
 
-    /**
-     * Write URL to text file based on casa parameter
-     *
-     * @param int|string $casa
-     * @return void
-     */
-    protected function writeCasaFile($casa,$data)
-    {
-        $casaFiles = config('casa.file');
-        
-        // Validate casa parameter
-        if (!isset($casaFiles[$casa])) {
-            Log::warning("Invalid casa parameter: {$casa}");
-            return;
-        }
-
-        // Get file configuration
-        $filePath = $casaFiles[$casa]['path'];
-        $fileName = $casaFiles[$casa]['name'];
-        $fullPath = $filePath . DIRECTORY_SEPARATOR . $fileName;
-
-        // Create directory if it doesn't exist
-        if (!File::exists($filePath)) {
-            File::makeDirectory($filePath, 0755, true);
-        }
-
-        // Get the URL for the specified casa
-        $text = $data->get('name','');
-
-        // Write URL to file
-        File::put($fullPath,    $text);
-
-        Log::info("Casa file written: {$fullPath} with URL: {$text}");
-    }
 
     /**
      * Standard JSON response format

@@ -2,11 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BonService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class PaymentsController extends Controller
 {
+
+    protected $bonService;
+    public function __construct(BonService $bonService)
+    {
+        $this->bonService = $bonService;
+    }
+
+
     /**
      * Calculate subtotal
      *
@@ -19,7 +28,7 @@ class PaymentsController extends Controller
             // TODO: Implement subTotal logic
             
             Log::info('SubTotal calculation requested', $request->all());
-            
+            $this->bonService->writeSubtotal($request->all());
             return response()->json([
                 'success' => true,
                 'message' => 'SubTotal calculated successfully',
@@ -51,10 +60,7 @@ class PaymentsController extends Controller
             // TODO: Implement payment logic
             
             Log::info('Payment processing requested', $request->all());
-            $bonNo = file_get_contents(base_path('bon'));
-            $currentBon = intval($bonNo)+1;
-            file_put_contents(base_path('bon'), $currentBon);
-
+            $currentBon = $this->bonService->writeBonFinal($request->all());
             return response()->json([
                 'success' => true,
                 'message' => 'Payment processed successfully',
