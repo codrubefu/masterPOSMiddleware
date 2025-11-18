@@ -72,19 +72,18 @@ class BonService
      *
      * @param int $casa
      * @param string $content
-     * @return void
+     * @return bool
      * @throws \Exception
      */
-    private function writeToBonFile(int $casa, string $content): int
+    private function writeToBonFile(int $casa, string $content): bool
     {
-        $bonNo = $this->getNextBonNumber();
-        $entryFilePath = $this->casaFiles[$casa]['path'] . '/bon' .$bonNo . '.txt';
+        $entryFilePath = $this->casaFiles[$casa]['path'] . '/bon.txt';
         
         if (file_put_contents($entryFilePath, $content) === false) {
             throw new \Exception('Failed to write to bon file.');
         }
 
-        return $bonNo;
+        return true;
     }
 
     /**

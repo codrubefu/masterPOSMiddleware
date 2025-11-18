@@ -6,8 +6,6 @@ use App\Models\UpcGenprod;
 use Illuminate\Http\Request;
 use App\Models\TrzBoncurdel;
 use App\Services\BonService;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
 
 class ArticleController extends Controller
 {

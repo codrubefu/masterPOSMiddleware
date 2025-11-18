@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BonDatabaseService;
 use App\Services\BonService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -60,7 +61,8 @@ class PaymentsController extends Controller
             // TODO: Implement payment logic
             
             Log::info('Payment processing requested', $request->all());
-            $currentBon = $this->bonService->writeBonFinal($request->all());
+            $this->bonService->writeBonFinal($request->all());
+            $currentBon = 12;
             return response()->json([
                 'success' => true,
                 'message' => 'Payment processed successfully',
@@ -80,11 +82,11 @@ class PaymentsController extends Controller
         }
     }
 
-    public function isPaymentDone(Request $request)
+    public function isPaymentDone(Request $request, BonDatabaseService $bonDatabaseService)
     {
         // Random success: 20% true, 80% false
         $success = rand(1, 100) <= 20;
-        
+        $bonDatabaseService->save($request);
         return response()->json([
             'success' => $success,
             'message' => 'Test payment endpoint is working',
