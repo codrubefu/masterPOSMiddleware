@@ -77,8 +77,8 @@ class BonService
      */
     private function writeToBonFile(int $casa, string $content): bool
     {
-        // Check if casa path exists, otherwise use storage/bon
-        if (isset($this->casaFiles[$casa]['path'])) {
+        // Check if casa path exists in config and the folder exists on filesystem
+        if (isset($this->casaFiles[$casa]['path']) && file_exists($this->casaFiles[$casa]['path'])) {
             $casaPath = $this->casaFiles[$casa]['path'];
         } else {
             $casaPath = storage_path('bon');
