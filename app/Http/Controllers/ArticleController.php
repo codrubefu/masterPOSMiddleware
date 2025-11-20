@@ -149,10 +149,10 @@ class ArticleController extends Controller
     {
         $prices = $product->prices->toArray();
         return [
-            'id' => $product->upc,
-            'name' => $product->art,
-            'upc' => $product->upc,
-            'price' => $this->getPrice($quantity, $prices),
+            'id' => trim($product->upc),
+            'name' => trim($product->art),
+            'upc' => trim($product->upc),
+            'price' => trim($this->getPrice($quantity, $prices)),
             'quantity' => $quantity,
             'sgr' => $product->ambsgr
         ];

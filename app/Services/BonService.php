@@ -131,7 +131,7 @@ class BonService
         }
         foreach ($data['items'] as $item) {
             $lines[] = sprintf(
-                "49,%s\t%s\t%s\t%s\t\t\t%s\tbuc",
+                "49,%s\t%s\t%s\t%s\t\t\t%s\tbuc\t",
                 $item['product']['name'],
                 $item['qty'],
                 $item['unitPrice'],
@@ -144,5 +144,5 @@ class BonService
         return $this->writeToBonFile($data['casa'], $finalContent);
          
     }
-              
+
 }
