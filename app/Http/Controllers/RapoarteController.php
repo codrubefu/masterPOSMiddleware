@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Services\BonService;
 
 class RapoarteController extends Controller
 {
+
+    protected $bonService;
+    public function __construct(BonService $bonService)
+    {
+        $this->bonService = $bonService;
+    }
+
     /**
      * Generate X report
      *
@@ -19,7 +27,7 @@ class RapoarteController extends Controller
             // TODO: Implement generateX logic
             
             Log::info('Generate X report requested');
-            
+            $this->bonService->writeRaportX($request->all());
             return response()->json([
                 'success' => true,
                 'message' => 'Report X generated successfully',
@@ -51,6 +59,8 @@ class RapoarteController extends Controller
             // TODO: Implement generateZ logic
             
             Log::info('Generate Z report requested');
+
+            $this->bonService->writeRaportZ($request->all());
             
             return response()->json([
                 'success' => true,

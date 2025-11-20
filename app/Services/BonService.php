@@ -156,4 +156,18 @@ class BonService
          
     }
 
+    public function writeRaportZ($data): int
+    {
+        $template = $this->loadTemplate('raportz.txt');
+        $content = sprintf($template, $data['casa']);
+        return $this->writeToBonFile($data['casa'], $content);
+    }
+
+    public function writeRaportX($data): int
+    {
+        $template = $this->loadTemplate('raportx.txt');
+        $content = sprintf($template, $data['casa']);
+        return $this->writeToBonFile($data['casa'], $content);
+    }
+
 }
