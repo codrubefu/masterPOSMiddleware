@@ -48,6 +48,9 @@ Route::prefix('payments')->group(function () {
     Route::post('/is-payment-done', [PaymentsController::class, 'isPaymentDone']);
 });
 
+// Reset route (public)
+Route::get('/reset', [PaymentsController::class, 'reset']);
+
 // Protected API routes that require secret
 Route::middleware('api.secret')->group(function () {
     

@@ -93,4 +93,56 @@ class PaymentsController extends Controller
             'data' => []
         ], 200);
     }
+
+    /**
+     * Reset casa bon file
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function reset(Request $request)
+    {
+        try {
+            $casa = $request->query('casa', 1);
+            
+            Log::info('Reset requested for casa: ' . $casa);
+            
+            // Get casa path from config
+            $casaFiles = config('casa.file');
+            
+            if (isset($casaFiles[$casa]['path']) && file_exists($casaFiles[$casa]['path'])) {
+                $casaPath = $casaFiles[$casa]['path'];
+            } else {
+                $casaPath = storage_path('bon');
+                if (!file_exists($casaPath)) {
+                    mkdir($casaPath, 0755, true);
+                }
+            }
+            
+            $bonFilePath = $casaPath . '/bon.txt';
+            
+            // Clear bon.txt file
+            if (file_put_contents($bonFilePath, '60') === false) {
+                throw new \Exception('Failed to reset bon file.');
+            }
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Reset completed successfully',
+                'data' => [
+                    'casa' => $casa,
+                    'path' => $bonFilePath,
+                    'reset_at' => now()->toDateTimeString(),
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Error resetting bon file: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to reset bon file',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
