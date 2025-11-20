@@ -77,7 +77,18 @@ class BonService
      */
     private function writeToBonFile(int $casa, string $content): bool
     {
-        $entryFilePath = $this->casaFiles[$casa]['path'] . '/bon.txt';
+        // Check if casa path exists, otherwise use storage/bon
+        if (isset($this->casaFiles[$casa]['path'])) {
+            $casaPath = $this->casaFiles[$casa]['path'];
+        } else {
+            $casaPath = storage_path('bon');
+            // Create directory if it doesn't exist
+            if (!file_exists($casaPath)) {
+                mkdir($casaPath, 0755, true);
+            }
+        }
+        
+        $entryFilePath = $casaPath . '/bon.txt';
         
         if (file_put_contents($entryFilePath, $content) === false) {
             throw new \Exception('Failed to write to bon file.');
