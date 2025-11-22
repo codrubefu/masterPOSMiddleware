@@ -196,7 +196,7 @@ class BonService
         
         // Create new BONOK folder
         if (!file_exists($okFolder)) {
-           // mkdir($okFolder, 0755, true);
+            mkdir($okFolder, 0755, true);
         }
     }
 
