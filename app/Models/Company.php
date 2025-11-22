@@ -150,6 +150,7 @@ class Company extends Model
         'centralizare',
         'limcant',
         'posretailcautprodinfo',
+        'nrbfdude'
     ];
 
     /**
