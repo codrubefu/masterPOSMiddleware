@@ -154,6 +154,7 @@ class ArticleController extends Controller
             'upc' => trim($product->upc),
             'price' => trim($this->getPrice($quantity, $prices)),
             'quantity' => $quantity,
+            'departament' => $product->depart,
             'sgr' => $product->ambsgr
         ];
     }

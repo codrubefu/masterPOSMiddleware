@@ -108,7 +108,7 @@ class BonService
     public function writeNewEntry($casa, $data): void
     {
         $template = $this->loadTemplate('bonline.txt');
-        $content = sprintf($template, $data['name'], 2, $data['price']);
+        $content = sprintf($template, $data['name'], $data['departament'], $data['price']);
         $this->writeToBonFile($casa, $content);
     }
 
@@ -144,10 +144,10 @@ class BonService
             $lines[] = sprintf(
                 "49,%s	%s	%s	%s			%s	buc	",
                 $item['product']['name'],
-                2,
+                $item['product']['departament'],
                 $item['unitPrice'],
                 $item['qty'].'.000',
-                2,
+                $item['product']['departament']
             );
         }
         $itemsContent = implode("\n", $lines);
