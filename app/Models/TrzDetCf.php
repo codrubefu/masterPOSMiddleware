@@ -59,6 +59,7 @@ class TrzDetCf extends Model
         'upc',
         'cotatva',
         'art2',
+        'depart',
     ];
 
     /**
@@ -87,6 +88,7 @@ class TrzDetCf extends Model
         'upc' => 'string',
         'cotatva' => 'decimal:4',
         'art2' => 'string',
+        'depart' => 'integer',
     ];
 
     /**

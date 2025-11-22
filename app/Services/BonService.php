@@ -142,6 +142,7 @@ class BonService
         else{
             $code = 2;
         }
+        
         foreach ($data['items'] as $item) {
             $lines[] = sprintf(
                 "49,%s	%s	%s	%s			%s	buc	",

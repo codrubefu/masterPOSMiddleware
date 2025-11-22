@@ -57,7 +57,7 @@ class PaymentsController extends Controller
      */
     public function payment(Request $request)
     {
-        try {
+        
             // TODO: Implement payment logic
             
             Log::info('Payment processing requested', $request->all());
@@ -71,15 +71,7 @@ class PaymentsController extends Controller
                     'processed_at' => now()->toDateTimeString(),
                 ]
             ], 200);
-        } catch (\Exception $e) {
-            Log::error('Error processing payment: ' . $e->getMessage());
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to process payment',
-                'error' => $e->getMessage()
-            ], 500);
-        }
+       
     }
 
     public function isPaymentDone(Request $request, BonDatabaseService $bonDatabaseService)
