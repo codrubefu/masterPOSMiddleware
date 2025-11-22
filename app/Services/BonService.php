@@ -178,7 +178,7 @@ class BonService
     public function isPaymentDone($casa): bool
     {
         $company = Company::first();
-        $bon = $this->casaFiles[$casa]['path'].'/BONERR/bon'.$company->nrbf.'.txt';
+        $bon = $this->casaFiles[$casa]['path'].'/BONERR/bon'.$company->nrbonfdude .'.txt';
         if( !file_exists($bon) ){
             return false;
         }
