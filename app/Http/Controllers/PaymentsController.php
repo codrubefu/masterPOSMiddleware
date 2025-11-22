@@ -74,14 +74,13 @@ class PaymentsController extends Controller
        
     }
 
-    public function isPaymentDone(Request $request, BonDatabaseService $bonDatabaseService)
+    public function isPaymentDone(Request $request, BonService $bonService)
     {
-        // Random success: 20% true, 80% false
-        $success = rand(1, 100) <= 20;
-        $bonDatabaseService->save($request);
+        $success = $bonService->isPaymentDone($request->query('casa', 1));
+        
         return response()->json([
             'success' => $success,
-            'message' => 'Test payment endpoint is working',
+            'message' => $success ? 'Payment is done' : 'Payment is not done',
             'data' => []
         ], 200);
     }

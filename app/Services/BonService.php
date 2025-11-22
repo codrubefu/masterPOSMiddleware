@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Company;
+
 class BonService
 {
     protected $casaFiles;
@@ -171,6 +173,22 @@ class BonService
         $template = $this->loadTemplate('raportx.txt');
         $content = sprintf($template, $data['casa']);
         return $this->writeToBonFile($data['casa'], $content);
+    }
+
+    public function isPaymentDone($casa): bool
+    {
+        $company = Company::first();
+        $bon = $this->casaFiles[$casa]['path'].'/BONERR/bon'.$company->nrbf.'.txt';
+        if( !file_exists($bon) ){
+            return false;
+        }
+
+        $bonContent = file_get_contents($bon);
+        // Check if bonContent contains both Command = 56 and Command = 53
+        $hasCommand56 = strpos($bonContent, 'Command = 56') !== false;
+        $hasCommand53 = strpos($bonContent, 'Command = 53') !== false;
+        
+        return $hasCommand56 && $hasCommand53;
     }
 
 }
