@@ -49,7 +49,7 @@ class ArticleController extends Controller
         // Write URL to text file based on casa parameter
         $casa = $request->get('casa');
         if ($casa) {
-            $this->bonService->writeNewEntry($casa, $this->formatProduct($product, 1));
+            $this->bonService->writeNewEntry($casa, $this->formatProduct($product, 1), $request->get('isSgr', false));
         }
         
         return $this->jsonResponse(
@@ -90,7 +90,7 @@ class ArticleController extends Controller
         $quantity = $request->get('qty', 1);
         $casa = $request->get('casa');
         if ($casa) {
-            $this->bonService->writeNewEntry($casa, $this->formatProduct($product, $quantity));
+            $this->bonService->writeNewEntry($casa, $this->formatProduct($product, $quantity),$request->get('isSgr', false));
         }
 
         return $this->jsonResponse(

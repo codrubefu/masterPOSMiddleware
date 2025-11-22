@@ -105,11 +105,13 @@ class BonService
      * @return void
      * @throws \Exception
      */
-    public function writeNewEntry($casa, $data): void
+    public function writeNewEntry($casa, $data, $isSgr): void
     {
         $template = $this->loadTemplate('bonline.txt');
         $content = sprintf($template, $data['name'], $data['departament'], $data['price']);
-        $this->writeToBonFile($casa, $content);
+        if( !$isSgr ){
+          $this->writeToBonFile($casa, $content);
+        }
     }
 
     /**
