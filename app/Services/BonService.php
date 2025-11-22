@@ -184,7 +184,12 @@ class BonService
     protected function archiveDay($casa){
         $okFolder = $this->casaFiles[$casa]['path'].'\BONOK';
         $archiveFolder = $this->casaFiles[$casa]['path'].'\BONOK'.date('Ymd');
-        dd($archiveFolder);
+        
+        // If archive folder exists, add hour and minutes
+        if (file_exists($archiveFolder)) {
+            $archiveFolder = $this->casaFiles[$casa]['path'].'\BONOK'.date('Ymd_His');
+        }
+        
         if (file_exists($okFolder)) {
             rename($okFolder, $archiveFolder);
         }
