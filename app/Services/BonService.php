@@ -168,11 +168,31 @@ class BonService
         return $this->writeToBonFile($data['casa'], $content);
     }
 
-    public function writeRaportX($data): int
+    public function writeRaportX($data): bool
     {
         $template = $this->loadTemplate('raportx.txt');
         $content = sprintf($template, $data['casa']);
-        return $this->writeToBonFile($data['casa'], $content);
+        $isOk = $this->writeToBonFile($data['casa'], $content);
+        if ($isOk) {
+            $this->archiveDay($data['casa']);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function archiveDay($casa){
+        $okFolder = $this->casaFiles[$casa]['path'].'\BONOK';
+        $archiveFolder = $this->casaFiles[$casa]['path'].'\BONOK'.date('Ymd');
+        dd($archiveFolder);
+        if (file_exists($okFolder)) {
+            rename($okFolder, $archiveFolder);
+        }
+        
+        // Create new BONOK folder
+        if (!file_exists($okFolder)) {
+           // mkdir($okFolder, 0755, true);
+        }
     }
 
     public function isPaymentDone($casa): bool
