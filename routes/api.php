@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\RapoarteController;
 use App\Http\Controllers\PaymentsController;
+use App\Http\Controllers\ConfigController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,7 @@ Route::prefix('payments')->group(function () {
     Route::post('/is-payment-done', [PaymentsController::class, 'isPaymentDone']);
 });
 
+Route::get('/config', [ConfigController::class, 'config']);
 // Reset route (public)
 Route::get('/reset', [PaymentsController::class, 'reset']);
 
