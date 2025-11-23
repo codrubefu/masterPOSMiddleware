@@ -76,7 +76,7 @@ class PaymentsController extends Controller
 
     public function isPaymentDone(Request $request, BonService $bonService)
     {
-        $success = $bonService->isPaymentDone($request->query('casa', 1));
+        $success = $bonService->isPaymentDone($request->casa);
         
         return response()->json([
             'success' => $success,
