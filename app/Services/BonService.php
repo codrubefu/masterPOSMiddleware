@@ -133,7 +133,7 @@ class BonService
 
     public function writeBonFinal($data): int
     {
-        $template = $this->loadTemplate('bonfinal.txt');
+       
         $lines = [];
         if($data['type']=='cash'){
             $code = 0;
@@ -156,7 +156,16 @@ class BonService
             );
         }
         $itemsContent = implode("\n", $lines);
-        $finalContent = sprintf($template, $itemsContent,$code);
+        if(isset($data['customer']['type']) && $data['customer']['type']=='pj'){
+             $template = $this->loadTemplate('bonfinalpj.txt');
+            $finalContent = sprintf($template, $itemsContent,$code,$data['customer']['cnpcui']);
+
+        }
+        else{
+            $template = $this->loadTemplate('bonfinal.txt');
+            $finalContent = sprintf($template, $itemsContent,$code);
+
+        }
         return $this->writeToBonFile($data['casa'], $finalContent);
          
     }

@@ -16,7 +16,7 @@ class CustomerController extends Controller
     public function show($id)
     {
         // Find customer by cardId
-        $client = Client::where('cardId', $id)->first();
+        $client = Client::where('cnpcui', trim($id))->first();
 
         if (!$client) {
             return response()->json([
@@ -33,6 +33,7 @@ class CustomerController extends Controller
             'lastName' => $client->den,
             'firstName' => $client->prenume,
             'cardId' => $client->cardid,
+            'cnpcui' => $client->cnpcui,
             'discountPercent' => $client->discount ?? 0
         ];
 
