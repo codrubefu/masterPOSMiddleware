@@ -13,11 +13,12 @@ return [
     'file' => [
         1 => [
             'name' => env('CASA_FILE_NAME', 'casa_output.txt'),
-            'path' => base_path('casa/1')
+            'path' => '\\\\ARIPOS1\\datecs$\\'   // corect pentru Windows UNC
+
         ],
         2 => [
             'name' => env('CASA_FILE_NAME', 'casa_output.txt'),
-            'path' => storage_path('/casa/2')
+            'path' => '\\\\ARIPOS2\\datecs$\\'
         ],
         3 => [
             'name' => env('CASA_FILE_NAME', 'casa_output.txt'),
@@ -29,8 +30,9 @@ return [
         ]
     ],
     'casa' => [
-        '192.168.1.10' => 1,
-        '192.168.1.11' => 2,
+        '192.168.1.106' => 1,
+        '192.168.1.125' => 2,
+	    '192.168.1.35' => 3
     ]
 
 ];
