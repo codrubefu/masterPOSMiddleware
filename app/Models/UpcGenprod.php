@@ -172,6 +172,11 @@ class UpcGenprod extends Model
             ->first();
     }
 
+    public static function getByUpc($upc)
+    {
+        return self::where('upc', $upc)->first();
+    }
+
     /**
      * Get the full product code
      *

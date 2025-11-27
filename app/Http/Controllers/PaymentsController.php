@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TrzCfe;
+use App\Models\TrzDetCf;
 use App\Services\BonDatabaseService;
 use App\Services\BonService;
 use Illuminate\Http\Request;
@@ -55,13 +57,10 @@ class PaymentsController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function payment(Request $request)
+    public function payment(Request $request, BonDatabaseService $bonDatabaseService)
     {
-        
-            // TODO: Implement payment logic
-            
-            Log::info('Payment processing requested', $request->all());
             $this->bonService->writeBonFinal($request->all());
+            $bonDatabaseService->save($request);
             $currentBon = 12;
             return response()->json([
                 'success' => true,

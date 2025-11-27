@@ -40,26 +40,26 @@ class TrzDetCf extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'idfirma',
-        'nrbonf',
-        'casa',
-        'idcl',
-        'art',
-        'cant',
-        'pretueur',
-        'preturon',
-        'redabs',
-        'redproc',
-        'valoare',
-        'data',
-        'compid',
-        'inchidzi',
-        'genconsum',
-        'pretfaradisc',
-        'upc',
-        'cotatva',
-        'art2',
-        'depart',
+        'idfirma', // 1
+        'nrbonf', // nr bon
+        'casa', // casa
+        'idcl', // id client
+        'art', // Numele articolului
+        'cant', // cantitate
+        'pretueur',// 0
+        'preturon', //pret pe bucata
+        'redabs', // 0
+        'redproc', //0
+        'valoare', // valoare totală
+        'data', // data si ora
+        'compid', // AriPos1 sau A
+        'idtrzf', // autoincrement
+        'inchidzi', // false
+        'genconsum', // false
+        'pretfaradisc', // pret unitate
+        'upc', // cod de bare
+        'cotatva', // 0.21
+        'art2', // NULL
     ];
 
     /**
@@ -97,29 +97,40 @@ class TrzDetCf extends Model
      * @param array $data
      * @return static
      */
-    public static function createDetail(array $data)
+    public static function createDetail(array $data,array $client, $type = null,$tva=0.21)
     {
+        if ($type){
+            if ($type == 'cash') {
+                $paymentType = 'numRON';
+            } elseif ($type == 'card') {
+                $paymentType = 'ccRON';
+            } else {
+                $paymentType = 'ppRON'; // Mixed payment
+            }
+        }
+
         return static::create([
-            'idfirma' => $data['idfirma'] ?? 1,
-            'nrbonf' => $data['nrbonf'],
+            'idfirma' =>  1,
             'casa' => $data['casa'] ?? 1,
-            'idcl' => $data['idcl'] ?? 0,
-            'art' => $data['art'],
-            'cant' => $data['cant'],
+            'idcl' => $client['id'] ?? 1,
+            'art' => $data['product']['name'],
+            'cant' => $data['qty'].'.000',
             'pretueur' => $data['pretueur'] ?? 0.00,
-            'preturon' => $data['preturon'],
+            'preturon' => $data['product']['price'],
             'redabs' => $data['redabs'] ?? 0.00,
             'redproc' => $data['redproc'] ?? 0.00,
-            'valoare' => $data['valoare'],
-            'data' => $data['data'] ?? now(),
-            'compid' => $data['compid'] ?? null,
-            'inchidzi' => $data['inchidzi'] ?? false,
-            'genconsum' => $data['genconsum'] ?? false,
-            'pretfaradisc' => $data['pretfaradisc'] ?? 0.00,
-            'upc' => $data['upc'] ?? null,
-            'cotatva' => $data['cotatva'] ?? 0.0000,
+            'valoare' => $data['product']['price'] * $data['qty'],
+            'data' =>  now(),
+            'compid' => $paymentType,
+            'inchidzi' =>  false,
+            'genconsum' => false,
+            'pretfaradisc' => $data['product']['price'],
+            'upc' => $data['product']['upc'] ?? null,
+            'cotatva' => $tva,
             'art2' => $data['art2'] ?? null,
+
         ]);
+
     }
 
     /**

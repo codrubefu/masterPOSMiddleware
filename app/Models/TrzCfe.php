@@ -41,36 +41,37 @@ class TrzCfe extends Model
      */
     protected $fillable = [
         'idfirma',
-        'idcl',
-        'stotalron',
-        'redabs',
-        'redproc',
-        'itotalron',
-        'itotaleur',
-        'itotalusd',
-        'modp',
-        'nrtrzcc',
-        'tipcc',
-        'tipv',
-        'data',
-        'compid',
-        'nrbonspec',
-        'costtot',
-        'chit',
-        'idtrzcf',
-        'casa',
-        'nrdispliv',
-        'nrbontrzcfeaux',
-        'idlogin',
-        'userlogin',
-        'numerar',
-        'card',
-        'nrnp',
-        'datac',
-        'tichete',
-        'cuibf',
-        'idrapz',
-        'anulat',
+        'idcl', // 1 data persf , id codul fiscal
+        'stotalron', // total cu tva
+        'redabs', // 0 valoare reducere absoluta
+        'redproc', // 
+        'itotalron', // total cu tva
+        'itotaleur', // 0
+        'itotalusd', //
+        'modp', // numRON, ccRON, ppRON
+        'nrtrzcc', // 0
+        'tipcc', // 0
+        'tipv', // RON
+        'data', // data si ora
+        'compid', // AriPos1 sau 
+        'nrbonfint', // autoincrement
+        'nrbonspec', // NULL
+        'costtot', // NULL  
+        'chit', // false
+        'idtrzcf', // NULL
+        'casa', // numarul casei
+        'nrdispliv', // 0
+        'nrbontrzcfeaux', // NULL
+        'idlogin', // 0
+        'userlogin', // MULL
+        'numerar',// NULL
+        'card', // NULL
+        'nrnp', // NULL
+        'datac', 
+        'tichete', // o
+        'cuibf', // 0 sau CUI persoana juridica
+        'idrapz', // 0
+        'anulat', // false
     ];
 
     /**
@@ -82,11 +83,11 @@ class TrzCfe extends Model
         'idfirma' => 'integer',
         'idcl' => 'integer',
         'stotalron' => 'integer',
-        'redabs' => 'decimal:2',
-        'redproc' => 'decimal:2',
-        'itotalron' => 'decimal:2',
-        'itotaleur' => 'decimal:2',
-        'itotalusd' => 'decimal:2',
+        'redabs' => 'float',
+        'redproc' => 'float',
+        'itotalron' => 'float',
+        'itotaleur' => 'float',
+        'itotalusd' => 'float',
         'modp' => 'string',
         'nrtrzcc' => 'string',
         'tipcc' => 'string',
@@ -95,7 +96,7 @@ class TrzCfe extends Model
         'compid' => 'string',
         'nrbonfint' => 'integer',
         'nrbonspec' => 'string',
-        'costtot' => 'decimal:2',
+        'costtot' => 'float',
         'chit' => 'boolean',
         'idtrzcf' => 'integer',
         'casa' => 'integer',
@@ -103,11 +104,11 @@ class TrzCfe extends Model
         'nrbontrzcfeaux' => 'integer',
         'idlogin' => 'integer',
         'userlogin' => 'string',
-        'numerar' => 'decimal:2',
-        'card' => 'decimal:2',
+        'numerar' => 'float',
+        'card' => 'float',
         'nrnp' => 'integer',
         'datac' => 'datetime',
-        'tichete' => 'decimal:2',
+        'tichete' => 'float',
         'cuibf' => 'integer',
         'idrapz' => 'integer',
         'anulat' => 'boolean',
@@ -152,27 +153,28 @@ class TrzCfe extends Model
      * @param Company|null $company Company instance
      * @return static
      */
-    public static function create(array $data, $company = null)
+    public static function createFromPOS(array $data)
     {
         // Determine payment type
         $paymentType = 'numRON'; // Default to cash
-        if (isset($data['pendingPayment']['type'])) {
-            if ($data['pendingPayment']['type'] == 'cash') {
+        if (isset($data['type'])) {
+            if ($data['type'] == 'cash') {
                 $paymentType = 'numRON';
-            } elseif ($data['pendingPayment']['type'] == 'card') {
+            } elseif ($data['type'] == 'card') {
                 $paymentType = 'ccRON';
             } else {
                 $paymentType = 'ppRON'; // Mixed payment
             }
         }
 
-        return static::create([
-            'idfirma' => $company->idfirma ?? $data['idfirma'] ?? 1,
+        $compId = 'AriPos'.$data['casa'] ; // Default compId
+        return parent::create([
+            'idfirma' => 1,
             'idcl' => $data['customer']['id'] ?? $data['idcl'] ?? null,
-            'stotalron' => $data['subtotal'] ?? $data['stotalron'] ?? 0,
-            'redabs' => $data['discount'] ?? $data['redabs'] ?? 0,
-            'redproc' => $data['discount_percentage'] ?? $data['redproc'] ?? 0,
-            'itotalron' => $data['subtotal'] ?? $data['itotalron'] ?? 0,
+            'stotalron' => $data['subtotal'] ?? $data['subtotal'] ?? 0,
+            'redabs' => $data['redabs'] ?? $data['redabs'] ?? 0,
+            'redproc' => $data['discount_percentage'] ?? $data['discount_percentage'] ?? 0,
+            'itotalron' => $data['subtotal'] ?? $data['subtotal'] ?? 0,
             'itotaleur' => null,
             'itotalusd' => null,
             'modp' => $paymentType,
@@ -180,7 +182,7 @@ class TrzCfe extends Model
             'tipcc' => null,
             'tipv' => 'RON',
             'data' => now(),
-            'compid' => null,
+            'compid' => $compId,
             'nrbonspec' => null,
             'costtot' => null,
             'chit' => false,
@@ -195,7 +197,7 @@ class TrzCfe extends Model
             'nrnp' => null,
             'datac' => now(),
             'tichete' => 0.00,
-            'cuibf' => '0',
+            'cuibf' => $data['customer']['cui'] ?? 0,
             'idrapz' => 0,
             'anulat' => false,
         ]);

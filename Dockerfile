@@ -50,3 +50,6 @@ RUN mkdir -p /var/www/html/storage /var/www/html/bootstrap/cache \
 
 # Instalare dependințe Laravel (poate fi rulat și manual în container)
 # RUN composer install --no-dev --optimize-autoloader
+
+# Enable PHP error display
+RUN echo "display_errors=On\nerror_reporting=E_ALL" > /usr/local/etc/php/conf.d/docker-php-errors.ini

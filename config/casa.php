@@ -27,6 +27,10 @@ return [
             'name' => env('CASA_FILE_NAME', 'casa_output.txt'),
             'path' => storage_path('/casa/4')
         ]
+    ],
+    'casa' => [
+        '192.168.1.10' => 1,
+        '192.168.1.11' => 2,
     ]
 
 ];
