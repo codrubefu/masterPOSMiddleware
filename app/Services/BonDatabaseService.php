@@ -7,8 +7,8 @@ use App\Models\TrzCfe;
 use App\Models\TrzDetCf;
 use App\Models\UpcGenprod;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-
+use App\Models\TrzCfePOS;
+use App\Models\TrzDetCfPOS;
 
 class BonDatabaseService
 {
@@ -24,10 +24,33 @@ class BonDatabaseService
         $data = $request->all();
            TrzCfe::createFromPOS($data);
 
-        $this->saveTrzCfeAux($data);
+        $this->saveDetCf($data);
+        $this->savePartial($data);
     }
 
-    protected function saveTrzCfeAux($data)
+    protected function savePartial($data)
+    {
+        // Split items by departament
+        $grouped = [];
+        foreach ($data['items'] as $item) {
+            $dept = (int)($item['product']['departament'] ?? 0);
+            $grouped[$dept][] = $item;
+        }
+
+        foreach ($grouped as $dept => $items) {
+            $partial = $data;
+            $partial['items'] = $items;
+            $partial['subtotal'] = array_sum(array_map(function($i) {
+                return $i['unitPrice'] * $i['qty'];
+            }, $items));
+            $partial['totalDiscount'] = 0; // Or recalculate if needed
+            $partial['total'] = $partial['subtotal'] - $partial['totalDiscount'];
+            TrzCfePos::createFromPOS($partial);
+
+        }
+    }
+
+    protected function saveDetCf($data,$usePOSModel = false)
     {
 
         $product = UpcGenprod::getByUpc($data['items'][0]['product']['upc']);
@@ -41,8 +64,15 @@ class BonDatabaseService
 
         // Use the model's helper method for cleaner code
         foreach ($data['items'] as $item) {
-           TrzDetCf::createDetail($item,$data['customer'],$data['type'] ?? null,$tva);
+            if($usePOSModel) {
+                TrzDetCfPOS::createDetail($item,$data['customer'],$data['type'] ?? null,$tva);
+            }else{
+                TrzDetCf::createDetail($item,$data['customer'],$data['type'] ?? null,$tva);
+            }
+
         }
         
     }
+
+    
 }
