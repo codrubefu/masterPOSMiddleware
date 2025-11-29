@@ -48,7 +48,7 @@ class BonDatabaseService
             $partial['casa'] = $data['casa'];
             $partial['cashGiven'] = $data['cashGiven'];
             $partial['change'] = $data['change'];
-            $partial['pendingPayment'] = $data['pendingPayment'];
+            $partial['pendingPayment'] = $data['pendingPayment'] ?? null;
 
             $trzCfePOS = TrzCfe::createFromPOS($partial);
             $nrBon = $trzCfePOS->nrbonfint ?? null;
