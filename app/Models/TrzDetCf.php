@@ -73,20 +73,20 @@ class TrzDetCf extends Model
         'casa' => 'integer',
         'idcl' => 'integer',
         'art' => 'string',
-        'cant' => 'decimal:3',
-        'pretueur' => 'decimal:2',
-        'preturon' => 'decimal:2',
-        'redabs' => 'decimal:2',
-        'redproc' => 'decimal:2',
-        'valoare' => 'decimal:2',
+        'cant' => 'float',
+        'pretueur' => 'float',
+        'preturon' => 'float',
+        'redabs' => 'float',
+        'redproc' => 'float',
+        'valoare' => 'float',
         'data' => 'datetime',
         'compid' => 'string',
         'idtrzf' => 'integer',
         'inchidzi' => 'boolean',
         'genconsum' => 'boolean',
-        'pretfaradisc' => 'decimal:2',
+        'pretfaradisc' => 'float',
         'upc' => 'string',
-        'cotatva' => 'decimal:4',
+        'cotatva' => 'float',
         'art2' => 'string',
         'depart' => 'integer',
     ];
@@ -99,19 +99,26 @@ class TrzDetCf extends Model
      */
     public static function createDetail(array $data,array $client, $type = null,$tva=0.21)
     {
-        if ($type){
-            if ($type == 'cash') {
-                $paymentType = 'numRON';
-            } elseif ($type == 'card') {
-                $paymentType = 'ccRON';
-            } else {
-                $paymentType = 'ppRON'; // Mixed payment
-            }
+    
+        $compId = 'AriPos'.$data['casa'] ; // Default compId
+        if($data['departament'] == 1){
+            $tva = $data['product']['tax1'];
+        }elseif($data['departament'] == 2){
+            $tva = $data['product']['tax2'];
+        }elseif($data['departament'] == 3){
+            $tva = $data['product']['tax3'];
         }
+
+        if($data['gest'] == 3){
+            $casa = 8 ;
+        }else{
+            $casa = 9;
+        }
+
 
         return static::create([
             'idfirma' =>  1,
-            'casa' => $data['casa'] ?? 1,
+            'casa' => $casa,
             'idcl' => $client['id'] ?? 1,
             'art' => $data['product']['name'],
             'cant' => $data['qty'].'.000',
@@ -121,7 +128,7 @@ class TrzDetCf extends Model
             'redproc' => $data['redproc'] ?? 0.00,
             'valoare' => $data['product']['price'] * $data['qty'],
             'data' =>  now(),
-            'compid' => $paymentType,
+            'compid' => $compId,
             'inchidzi' =>  false,
             'genconsum' => false,
             'pretfaradisc' => $data['product']['price'],

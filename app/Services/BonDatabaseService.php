@@ -33,7 +33,7 @@ class BonDatabaseService
         // Split items by departament
         $grouped = [];
         foreach ($data['items'] as $item) {
-            $dept = (int)($item['product']['departament'] ?? 0);
+            $dept = (int)($item['product']['gest'] ?? 0);
             $grouped[$dept][] = $item;
         }
 
@@ -46,6 +46,7 @@ class BonDatabaseService
             $partial['totalDiscount'] = 0; // Or recalculate if needed
             $partial['total'] = $partial['subtotal'] - $partial['totalDiscount'];
             TrzCfePos::createFromPOS($partial);
+            $this->saveDetCf($partial, true);
 
         }
     }
@@ -53,21 +54,10 @@ class BonDatabaseService
     protected function saveDetCf($data,$usePOSModel = false)
     {
 
-        $product = UpcGenprod::getByUpc($data['items'][0]['product']['upc']);
-        if($product['depart'] == 1){
-            $tva = $product['tax1'];
-        }elseif($product['depart'] == 2){
-            $tva = $product['tax2'];
-        }elseif($product['depart'] == 3){
-            $tva = $product['tax3'];
-        }
-
-        // Use the model's helper method for cleaner code
-        foreach ($data['items'] as $item) {
             if($usePOSModel) {
-                TrzDetCfPOS::createDetail($item,$data['customer'],$data['type'] ?? null,$tva);
+                TrzDetCfPOS::createDetail($item,$data['customer'],$data['type'] ?? null);
             }else{
-                TrzDetCf::createDetail($item,$data['customer'],$data['type'] ?? null,$tva);
+                TrzDetCf::createDetail($item,$data['customer'],$data['type'] ?? null);
             }
 
         }

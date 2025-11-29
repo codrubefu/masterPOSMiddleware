@@ -60,14 +60,15 @@ class TrzDetCfPOS extends Model
 
     public static function createDetail(array $data, array $client, $type = null, $tva = 0.21)
     {
-        if ($type) {
-            if ($type == 'cash') {
-                $paymentType = 'numRON';
-            } elseif ($type == 'card') {
-                $paymentType = 'ccRON';
-            } else {
-                $paymentType = 'ppRON';
-            }
+  
+        $compId = 'AriPos'.$data['casa'] ; // Default compId
+
+        if($data['departament'] == 1){
+            $tva = $data['product']['tax1'];
+        }elseif($data['departament'] == 2){
+            $tva = $data['product']['tax2'];
+        }elseif($data['departament'] == 3){
+            $tva = $data['product']['tax3'];
         }
 
         return static::create([
@@ -82,7 +83,7 @@ class TrzDetCfPOS extends Model
             'redproc' => $data['redproc'] ?? 0.00,
             'valoare' => $data['product']['price'] * $data['qty'],
             'data' => now(),
-            'compid' => $paymentType,
+            'compid' => $compId,
             'inchidzi' => false,
             'genconsum' => false,
             'pretfaradisc' => $data['product']['price'],

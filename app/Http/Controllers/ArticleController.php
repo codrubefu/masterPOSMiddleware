@@ -82,7 +82,6 @@ class ArticleController extends Controller
     public function update(Request $request, $id)
     {
         $product = UpcGenprod::findByUpc($id)->first();
-        
         if (!$product) {
             return $this->jsonResponse(null, 'Product not found', false, 404);
         }
@@ -155,6 +154,10 @@ class ArticleController extends Controller
             'price' => trim($this->getPrice($quantity, $prices)),
             'quantity' => $quantity,
             'departament' => $product->depart,
+            'gest' => $product->gest,
+            'tax1' => $product->tax1,
+            'tax2' => $product->tax2,
+            'tax3' => $product->tax3,
             'sgr' => $product->ambsgr
         ];
     }
