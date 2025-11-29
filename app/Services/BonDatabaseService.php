@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Models\Company;
 use App\Models\TrzCfe;
-use App\Models\TrzDetCf;
 use Illuminate\Http\Request;
 use App\Models\TrzCfePOS;
 use App\Models\TrzDetCfPOS;
+use App\Models\TrzDetCf;
 
 class BonDatabaseService
 {
@@ -64,7 +64,7 @@ class BonDatabaseService
             if($usePOSModel) {
                 TrzDetCfPOS::createDetail($item,$data['customer'], $nrBon);
             }else{
-                TrzDetCfPOS::createDetail($item,$data['customer'], $nrBon);
+                TrzDetCf::createDetail($item,$data['customer'], $nrBon);
             } 
 
         }
