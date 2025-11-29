@@ -101,15 +101,15 @@ class TrzDetCf extends Model
     {
     
         $compId = 'AriPos'.$data['casa'] ; // Default compId
-        if($data['departament'] == 1){
+        if($data['product']['departament'] == 1){
             $tva = $data['product']['tax1'];
-        }elseif($data['departament'] == 2){
+        }elseif($data['product']['departament'] == 2){
             $tva = $data['product']['tax2'];
-        }elseif($data['departament'] == 3){
+        }elseif($data['product']['departament'] == 3){
             $tva = $data['product']['tax3'];
         }
 
-        if($data['gest'] == 3){
+        if($data['product']['gest'] == 3){
             $casa = 8 ;
         }else{
             $casa = 9;
