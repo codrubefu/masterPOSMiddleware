@@ -40,8 +40,7 @@ class ArticleController extends Controller
      */
     public function show($id, Request $request)
     {
-        $product = UpcGenprod::findByUpc($id)->first();
-        
+        $product = UpcGenprod::findByUpc($id);
         if (!$product) {
             return $this->jsonResponse(null, 'Product not found', false, 404);
         }
@@ -68,7 +67,6 @@ class ArticleController extends Controller
     {
         $query = $request->get('query', '');
         $product = UpcGenprod::findByUpc($query)->first();
-    
         return $this->jsonResponse($product, 'Product retrieved successfully');
     }
 
@@ -82,6 +80,8 @@ class ArticleController extends Controller
     public function update(Request $request, $id)
     {
         $product = UpcGenprod::findByUpc($id)->first();
+            dd($product->toArray());
+
         if (!$product) {
             return $this->jsonResponse(null, 'Product not found', false, 404);
         }

@@ -97,7 +97,7 @@ class TrzDetCf extends Model
      * @param array $data
      * @return static
      */
-    public static function createDetail(array $data,array $client, $type = null,$tva=0.21)
+    public static function createDetail(array $data,array $client, $nrBon)
     {
     
         $compId = 'AriPos'.$data['casa'] ; // Default compId
@@ -119,6 +119,7 @@ class TrzDetCf extends Model
         return static::create([
             'idfirma' =>  1,
             'casa' => $casa,
+            'nrbonf' => $nrBon,
             'idcl' => $client['id'] ?? 1,
             'art' => $data['product']['name'],
             'cant' => $data['qty'].'.000',

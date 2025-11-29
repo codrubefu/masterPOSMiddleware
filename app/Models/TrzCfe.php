@@ -170,7 +170,7 @@ class TrzCfe extends Model
         $compId = 'AriPos'.$data['casa'] ; // Default compId
         return parent::create([
             'idfirma' => 1,
-            'idcl' => $data['customer']['id'] ??  $data['customer']['id'] ?? null,
+            'idcl' => $data['customer']['id'] ??  $data['customer']['id'] ?? 1,
             'stotalron' => $data['subtotal'] ?? $data['subtotal'] ?? 0,
             'redabs' => $data['redabs'] ?? $data['redabs'] ?? 0,
             'redproc' => $data['discount_percentage'] ?? $data['discount_percentage'] ?? 0,

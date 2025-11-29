@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Company;
 use App\Models\TrzCfe;
 use App\Models\TrzDetCf;
-use App\Models\UpcGenprod;
 use Illuminate\Http\Request;
 use App\Models\TrzCfePOS;
 use App\Models\TrzDetCfPOS;
@@ -22,9 +21,9 @@ class BonDatabaseService
     public function save(Request $request)
     {
         $data = $request->all();
-           TrzCfe::createFromPOS($data);
-
-        $this->saveDetCf($data);
+        $trzCfe = TrzCfePOS::createFromPOS($data);
+        $nrBon = $trzCfe->nrbonfint ?? null;
+        $this->saveDetCf($data, $nrBon);
         $this->savePartial($data);
     }
 
@@ -33,42 +32,40 @@ class BonDatabaseService
         // Split items by departament
         $grouped = [];
         foreach ($data['items'] as $item) {
-            $dept = (int)($item['product']['departament'] ?? 0);
-            $grouped[$dept][] = $item;
+            $gest = (int)($item['product']['gest'] ?? 0);
+            $grouped[$gest][] = $item;
         }
+        foreach ($grouped as $dept) {
 
-        foreach ($grouped as $dept => $items) {
-            $partial = $data;
-            $partial['items'] = $items;
             $partial['subtotal'] = array_sum(array_map(function($i) {
                 return $i['unitPrice'] * $i['qty'];
-            }, $items));
+            }, $dept));
+            $partial['items'] = $dept;
+            $partial['customer'] = $data['customer'];
+            $partial['type'] = $data['type'];
             $partial['totalDiscount'] = 0; // Or recalculate if needed
             $partial['total'] = $partial['subtotal'] - $partial['totalDiscount'];
-            TrzCfePos::createFromPOS($partial);
+            $partial['casa'] = $data['casa'];
+            $partial['cashGiven'] = $data['cashGiven'];
+            $partial['change'] = $data['change'];
+            $partial['pendingPayment'] = $data['pendingPayment'];
 
+            $trzCfePOS = TrzCfe::createFromPOS($partial);
+            $nrBon = $trzCfePOS->nrbonfint ?? null;
+            $this->saveDetCf($partial, $nrBon, true);
         }
     }
 
-    protected function saveDetCf($data,$usePOSModel = false)
+    protected function saveDetCf($data,$nrBon, $usePOSModel = false)
     {
-
-        $product = UpcGenprod::getByUpc($data['items'][0]['product']['upc']);
-        if($product['depart'] == 1){
-            $tva = $product['tax1'];
-        }elseif($product['depart'] == 2){
-            $tva = $product['tax2'];
-        }elseif($product['depart'] == 3){
-            $tva = $product['tax3'];
-        }
 
         // Use the model's helper method for cleaner code
         foreach ($data['items'] as $item) {
             if($usePOSModel) {
-                TrzDetCfPOS::createDetail($item,$data['customer'],$data['type'] ?? null,$tva);
+                TrzDetCfPOS::createDetail($item,$data['customer'], $nrBon);
             }else{
-                TrzDetCf::createDetail($item,$data['customer'],$data['type'] ?? null,$tva);
-            }
+                TrzDetCfPOS::createDetail($item,$data['customer'], $nrBon);
+            } 
 
         }
         

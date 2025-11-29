@@ -40,25 +40,25 @@ class TrzDetCfPOS extends Model
         'casa' => 'integer',
         'idcl' => 'integer',
         'art' => 'string',
-        'cant' => 'decimal:3',
-        'pretueur' => 'decimal:2',
-        'preturon' => 'decimal:2',
-        'redabs' => 'decimal:2',
-        'redproc' => 'decimal:2',
-        'valoare' => 'decimal:2',
+        'cant' => 'float',
+        'pretueur' => 'float',
+        'preturon' => 'float',
+        'redabs' => 'float',
+        'redproc' => 'float',
+        'valoare' => 'float',
         'data' => 'datetime',
         'compid' => 'string',
         'idtrzf' => 'integer',
         'inchidzi' => 'boolean',
         'genconsum' => 'boolean',
-        'pretfaradisc' => 'decimal:2',
+        'pretfaradisc' => 'float',
         'upc' => 'string',
-        'cotatva' => 'decimal:4',
+        'cotatva' => 'float',
         'art2' => 'string',
         'depart' => 'integer',
     ];
 
-    public static function createDetail(array $data, array $client, $type = null, $tva = 0.21)
+    public static function createDetail(array $data, array $client, $nrBon)
     {
   
         $compId = 'AriPos'.$data['casa'] ; // Default compId
@@ -80,6 +80,7 @@ class TrzDetCfPOS extends Model
         return static::create([
             'idfirma' => 1,
             'casa' => $casa,
+            'nrbonf' => $nrBon,
             'idcl' => $client['id'] ?? 1,
             'art' => $data['product']['name'],
             'cant' => $data['qty'] . '.000',
