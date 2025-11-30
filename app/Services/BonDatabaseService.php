@@ -112,9 +112,9 @@ class BonDatabaseService
         // Use the model's helper method for cleaner code
         foreach ($data['items'] as $item) {
             if($usePOSModel) {
-                TrzDetCfPOS::createDetail($item,$data['customer'], $nrBon);
-            }else{ 
                 TrzDetCf::createDetail($item,$data['customer'], $nrBon);
+            }else{ 
+                TrzDetCfPOS::createDetail($item,$data['customer'], $nrBon);
             } 
         }  
     }
