@@ -86,7 +86,7 @@ class BonDatabaseService
             $grouped[$gest][] = $item;
         }
 
-        foreach ($grouped as $dept) {
+        foreach ($grouped as $gest=>$dept) {
 
             $partial['subtotal'] = array_sum(array_map(function($i) {
                 return $i['unitPrice'] * $i['qty'];
@@ -101,7 +101,7 @@ class BonDatabaseService
             $partial['change'] = $data['change'];
             $partial['pendingPayment'] = $data['pendingPayment'] ?? null;
 
-            $trzCfePOS = TrzCfe::createFromPOS($partial);
+            $trzCfePOS = TrzCfe::createFromPOS($partial,$gest);
             $nrBon = $trzCfePOS->nrbonfint ?? null;
             $this->saveDetCf($partial, $nrBon, true);
         }

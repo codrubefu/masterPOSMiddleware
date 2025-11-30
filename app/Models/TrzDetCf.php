@@ -46,7 +46,7 @@ class TrzDetCf extends Model
         'idcl', // id client
         'art', // Numele articolului
         'cant', // cantitate
-        'pretueur',// 0
+        'pretueur', // 0
         'preturon', //pret pe bucata
         'redabs', // 0
         'redproc', //0
@@ -97,26 +97,44 @@ class TrzDetCf extends Model
      * @param array $data
      * @return static
      */
-    public static function createDetail(array $data,array $client, $nrBon)
+    public static function createDetail(array $data, array $client, $nrBon)
     {
-    
-        
-        if($data['product']['departament'] == 1){
+
+
+        if ($data['product']['departament'] == 1) {
             $tva = $data['product']['tax1'];
-        }elseif($data['product']['departament'] == 2){
+        } elseif ($data['product']['departament'] == 2) {
             $tva = $data['product']['tax2'];
-        }elseif($data['product']['departament'] == 3){
+        } elseif ($data['product']['departament'] == 3) {
             $tva = $data['product']['tax3'];
         }
 
-        if($data['product']['gest'] == 3){
-            $casa = 8 ;
-            $compId = 'AriPos'.$data['casa'].'-B' ; // Default compId
-        }else{
-            $casa = 9;
-            $compId = 'AriPos'.$data['casa'].'-B' ; 
-        }
+        if ($data['casa'] == 1) {
+            if ($data['product']['gest'] == 3) {
+                $casa = 8;
+                $compId = 'POS' . $data['casa'] . '-D'; // Default compId
+            } else {
+                $casa = 9;
+                $compId = 'POS' . $data['casa'] . '-B';
+            }
+        } elseif ($data['casa'] == 2) {
+            if ($data['product']['gest'] == 3) {
+                $casa = 10;
+                $compId = 'POS' . $data['casa'] . '-D'; // Default compId
+            } else {
+                $casa = 11;
+                $compId = 'POS' . $data['casa'] . '-B';
+            }
+        } elseif ($data['casa'] == 3) {
 
+            if ($data['product']['gest'] == 3) {
+                $casa = 12;
+                $compId = 'POS' . $data['casa'] . '-D'; // Default compId
+            } else {
+                $casa = 13;
+                $compId = 'POS' . $data['casa'] . '-B';
+            }
+        }
 
         return static::create([
             'idfirma' =>  1,
@@ -124,7 +142,7 @@ class TrzDetCf extends Model
             'nrbonf' => $nrBon,
             'idcl' => $client['id'] ?? 1,
             'art' => $data['product']['name'],
-            'cant' => $data['qty'].'.000',
+            'cant' => $data['qty'] . '.000',
             'pretueur' => $data['pretueur'] ?? 0.00,
             'preturon' => $data['product']['price'],
             'redabs' => $data['redabs'] ?? 0.00,
@@ -140,7 +158,6 @@ class TrzDetCf extends Model
             'art2' => $data['art2'] ?? null,
 
         ]);
-
     }
 
     /**
@@ -268,7 +285,7 @@ class TrzDetCf extends Model
         $price = $this->preturon ?? 0;
         $absDiscount = $this->redabs ?? 0;
         $percDiscount = $this->redproc ?? 0;
-        
+
         return round($price - $absDiscount - ($price * $percDiscount / 100), 2);
     }
 
@@ -291,7 +308,7 @@ class TrzDetCf extends Model
     {
         $value = $this->valoare ?? 0;
         $vatRate = $this->cotatva ?? 0;
-        
+
         return round($value * $vatRate / (100 + $vatRate), 2);
     }
 

@@ -64,10 +64,10 @@ class TrzCfe extends Model
         'nrbontrzcfeaux', // NULL
         'idlogin', // 0
         'userlogin', // MULL
-        'numerar',// NULL
+        'numerar', // NULL
         'card', // NULL
         'nrnp', // NULL
-        'datac', 
+        'datac',
         'tichete', // o
         'cuibf', // 0 sau CUI persoana juridica
         'idrapz', // 0
@@ -153,7 +153,7 @@ class TrzCfe extends Model
      * @param Company|null $company Company instance
      * @return static
      */
-    public static function createFromPOS(array $data)
+    public static function createFromPOS(array $data, $gest = null)
     {
         // Determine payment type
         $paymentType = 'numRON'; // Default to cash
@@ -166,8 +166,15 @@ class TrzCfe extends Model
                 $paymentType = 'ppRON'; // Mixed payment
             }
         }
+        
+        if ($gest == 3) {
+            $compId = 'POS' . $data['casa'] . '-D'; // Default compId
 
-        $compId = 'AriPos'.$data['casa'] ; // Default compId
+        } else {
+            $compId = 'POS' . $data['casa'] . '-D'; // Default compId
+
+        }
+
         return parent::create([
             'idfirma' => 1,
             'idcl' => $data['customer']['id'] ??  $data['customer']['id'] ?? 1,

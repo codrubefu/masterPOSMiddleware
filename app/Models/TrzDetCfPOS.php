@@ -71,27 +71,26 @@ class TrzDetCfPOS extends Model
         if ($data['casa'] == 1) {
             if ($data['product']['gest'] == 3) {
                 $casa = 8;
-                $compId = 'AriPos' . $data['casa'] . '-D'; // Default compId
+                $compId = 'AriPos' . $data['casa'] ; // Default compId
             } else {
                 $casa = 9;
-                $compId = 'AriPos' . $data['casa'] . '-B';
+                $compId = 'AriPos' . $data['casa'] ;
             }
         } elseif ($data['casa'] == 2) {
             if ($data['product']['gest'] == 3) {
                 $casa = 10;
-                $compId = 'AriPos' . $data['casa'] . '-D'; // Default compId
+                $compId = 'AriPos' . $data['casa'] ; // Default compId
             } else {
                 $casa = 11;
-                $compId = 'AriPos' . $data['casa'] . '-B';
+                $compId = 'AriPos' . $data['casa'];
             }
         } elseif ($data['casa'] == 3) {
-
             if ($data['product']['gest'] == 3) {
                 $casa = 12;
-                $compId = 'AriPos' . $data['casa'] . '-D'; // Default compId
+                $compId = 'AriPos' . $data['casa']; // Default compId
             } else {
                 $casa = 13;
-                $compId = 'AriPos' . $data['casa'] . '-B';
+                $compId = 'AriPos' . $data['casa'];
             }
         }
         
