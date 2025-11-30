@@ -60,9 +60,6 @@ class TrzDetCfPOS extends Model
 
     public static function createDetail(array $data, array $client, $nrBon)
     {
-  
-        $compId = 'AriPos'.$data['casa'] ; // Default compId
-
         if($data['product']['departament'] == 1){
             $tva = $data['product']['tax1'];
         }elseif($data['product']['departament'] == 2){
@@ -71,11 +68,33 @@ class TrzDetCfPOS extends Model
             $tva = $data['product']['tax3'];
         }
 
-        if($data['product']['gest'] == 3){
-            $casa = 8 ;
-        }else{
-            $casa = 9;
+        if ($data['casa'] == 1) {
+            if ($data['product']['gest'] == 3) {
+                $casa = 8;
+                $compId = 'AriPos' . $data['casa'] . '-D'; // Default compId
+            } else {
+                $casa = 9;
+                $compId = 'AriPos' . $data['casa'] . '-B';
+            }
+        } elseif ($data['casa'] == 2) {
+            if ($data['product']['gest'] == 3) {
+                $casa = 10;
+                $compId = 'AriPos' . $data['casa'] . '-D'; // Default compId
+            } else {
+                $casa = 11;
+                $compId = 'AriPos' . $data['casa'] . '-B';
+            }
+        } elseif ($data['casa'] == 3) {
+
+            if ($data['product']['gest'] == 3) {
+                $casa = 12;
+                $compId = 'AriPos' . $data['casa'] . '-D'; // Default compId
+            } else {
+                $casa = 13;
+                $compId = 'AriPos' . $data['casa'] . '-B';
+            }
         }
+        
 
         return static::create([
             'idfirma' => 1,

@@ -100,7 +100,7 @@ class TrzDetCf extends Model
     public static function createDetail(array $data,array $client, $nrBon)
     {
     
-        $compId = 'AriPos'.$data['casa'] ; // Default compId
+        
         if($data['product']['departament'] == 1){
             $tva = $data['product']['tax1'];
         }elseif($data['product']['departament'] == 2){
@@ -111,8 +111,10 @@ class TrzDetCf extends Model
 
         if($data['product']['gest'] == 3){
             $casa = 8 ;
+            $compId = 'AriPos'.$data['casa'].'-B' ; // Default compId
         }else{
             $casa = 9;
+            $compId = 'AriPos'.$data['casa'].'-B' ; 
         }
 
 
