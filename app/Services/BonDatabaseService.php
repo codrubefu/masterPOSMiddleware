@@ -109,17 +109,14 @@ class BonDatabaseService
 
     protected function saveDetCf($data,$nrBon, $usePOSModel = false)
     {
-
         // Use the model's helper method for cleaner code
         foreach ($data['items'] as $item) {
             if($usePOSModel) {
                 TrzDetCfPOS::createDetail($item,$data['customer'], $nrBon);
-            }else{
+            }else{ 
                 TrzDetCf::createDetail($item,$data['customer'], $nrBon);
             } 
-
-        }
-        
+        }  
     }
 
     protected function deleteSGR(array $items): array
