@@ -34,7 +34,7 @@ class BonDatabaseService
             'product' => [
                 'upc' => '1113',
                 'name' => 'Garantie SGR Doza',
-                'price' => 0.30,
+                'price' => 0.50,
                 'gest' => 1,
                 'departament' => 3,
                 'tax1' => 0,
@@ -49,7 +49,7 @@ class BonDatabaseService
             'product' => [
                 'upc' => '1114',
                 'name' => 'Garantie SGR Sticla',
-                'price' => 0.20,
+                'price' => 0.50,
                 'gest' => 1,
                 'departament' => 3,
                 'tax1' => 0,

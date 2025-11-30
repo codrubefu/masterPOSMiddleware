@@ -166,13 +166,11 @@ class TrzCfe extends Model
                 $paymentType = 'ppRON'; // Mixed payment
             }
         }
-        
+
         if ($gest == 3) {
             $compId = 'POS' . $data['casa'] . '-D'; // Default compId
-
         } else {
-            $compId = 'POS' . $data['casa'] . '-D'; // Default compId
-
+            $compId = 'POS' . $data['casa'] . '-B'; // Default compId
         }
 
         return parent::create([
