@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\TrzCfePOS;
 use App\Models\TrzDetCfPOS;
 use App\Models\TrzDetCf;
+use App\Models\TrzFactBf;
+use App\Models\TrzDetFactBf;
 
 class BonDatabaseService
 {
@@ -75,6 +77,19 @@ class BonDatabaseService
         $nrBon = $trzCfe->nrbonfint ?? null;
         $this->saveDetCf($data, $nrBon);
         $this->savePartial($data);
+
+        //Save facura
+
+        $fact = TrzFactBf::createFromPOS($request->all());
+        $this->saveFacturaDet($request->all(), $fact);
+    }
+
+    protected function saveFacturaDet($data, $fact)
+    {
+             $nrFact = $fact->nrfact ?? null;
+             foreach ($data['items'] as $item) {
+                TrzDetFactBf::createDetail($item,$data['customer'], $nrFact);
+            }
     }
 
     protected function savePartial($data)
