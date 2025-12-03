@@ -8,6 +8,7 @@
 54,************************				
 54,Factura va fi incarcata in SPV    			
 54,Si o veti putea descarca    			
-54,de la min finante    			
+54,de la min finante    		
+54,************************				
 54,							
 56
