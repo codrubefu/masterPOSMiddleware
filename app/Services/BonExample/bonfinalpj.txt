@@ -1,10 +1,13 @@
 48, 1	0001	1			
 %s
 53,%s		
-
 54,************************	0	0	0	0	0	0	
 54,Aviz de expeditie    
-54,COD FISCAL:%s													
-54,************************							
+54,COD FISCAL:%s
+54,%s													
+54,************************				
+54,Factura va fi incarcata in SPV    			
+54,Si o veti putea descarca    			
+54,de la min finante    			
 54,							
 56
