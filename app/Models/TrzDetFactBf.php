@@ -125,13 +125,12 @@ class TrzDetFactBf extends Model
             $tva = $data['product']['tax3'];
         }
         $priceWithoutVat = self::getPriceWithoutVat($price, $tva);
-
         $dataValues = [
             'idfirma' => 1,
             'nrfact' => $nrFact,
             'idcl' => $client['id'] ?? null,
-            'clasa' => $data['product']['class'] ?? null,
-            'grupa' => $data['product']['group'] ?? null,
+            'clasa' => $data['product']['clasa'] ?? null,
+            'grupa' => $data['product']['grupa'] ?? null,
             'art' => $data['product']['name'] ?? null,
             'cant' => $qty,
             'cantf' => $qty,
