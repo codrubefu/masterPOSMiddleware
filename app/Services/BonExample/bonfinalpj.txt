@@ -1,6 +1,25 @@
 48, 1	0001	1			
-%s
-53,%s	
-54,COD FISCAL: %s	0	0	0	0	0	0   
+49,Tratament de hidratare si anti	1	234.00	1.000			1	buc	
+49,Tratament de hidratare si anti	1	234.00	1.000			1	buc	
+49,Tatament medical comercializat	3	516.00	1.000			3	buc	
+53,1		
+54,************************	0	0	0	0	0	0	
+54,Ines	0	0	0	0	0	0	
+54,Matei	0	0	0	0	0	0	
+54,Nota Plata 675257	0	0	0	0	0	0	
+54,Credit Card 	0	0	0	0	0	0	
+54,VISA	0	0	0	0	0	0	
+54,0	0	0	0	0	0	0	
+54,************************	0	0	0	0	0	0	
+54,Prin achitarea tarifului de acces declarati ca							
+54,ati luat la cunostinta si sunteti de acord cu							
+54,Regulamentul de Ordine Interioara si cu							
+54,Politica privind datele cu caracter personal							
+54,prelucrate de Orhideea Spa, afisate la intrarea							
+54,in centru,cat si pe www.orhideeaspa.ro							
+54,Prezenta copiilor in centru este permisa pana							
+54,la ora 20.							
+54,Saritul in piscina este strict interzis!							
+54,************************							
 54,							
 56
