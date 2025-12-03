@@ -158,7 +158,7 @@ class TrzFactBf extends Model
      * @param array $data Request data from POS system
      * @return static
      */
-    public static function createFromPOS(array $data)
+    public static function createFromPOS(array $data, $totalWithoutVat)
     {
         // Determine payment type
         $paymentType = 'NUMERAR'; // Default to cash
@@ -172,47 +172,49 @@ class TrzFactBf extends Model
             }
         }
 
-        $compId = 'AriPos' . ($data['casa'] ?? 1);
-        $subtotal = $data['subtotal'] ?? 0;
-        $tva = round($subtotal * 0.21, 2); // Calculate VAT at 21%
-
-        return parent::create([
+        $compId = 'AriPos' . ($data['casa'] ?? 1);  
+        // Get the biggest nrfact value from database
+        $maxNrFact = self::max('nrfact') ?? 0;
+        $nrfact = $maxNrFact + 1;
+        $factNo = str_pad($nrfact, 5, '0', STR_PAD_LEFT);
+        $dataToAdd = [
             'idfirma' => 1,
-            'nrfactfisc' => null,
-            'nrdep' => $data['departament'] ?? 1,
-            'nrgest' => $data['gest'] ?? 1,
+            'nrfactfisc' => ' ',
+            'nrdep' => 1,
+            'nrgest' => $data['items'][0]['product']['gest'],
             'idcl' => $data['customer']['id'] ?? null,
-            'stotalron' => $subtotal,
-            'redabs' => $data['totalDiscount'] ?? 0,
-            'redproc' => 0,
-            'tva' => $tva,
-            'cotatva' => 21,
-            'totalron' => $data['total'] ?? $subtotal,
-            'sold' => 0,
-            'itotalron' => $data['total'] ?? $subtotal,
+            'stotalron' => $totalWithoutVat, // Subtotal before VAT
+            'redabs' => null,
+            'redproc' => null,
+            'tva' => $data['subtotal'] - $totalWithoutVat, //valoare tva
+            'cotatva' => 1,
+            'totalron' => $data['subtotal'] , // Total amount
+            'sold' => $data['subtotal'] ,  // cu tva
+            'itotalron' => 0.00, // Total cu tva
             'itotaleur' => null,
             'itotalusd' => null,
-            'modp' => $paymentType,
+            'modp' => null,
             'nrtrzcc' => null,
             'tipcc' => null,
             'tipv' => 'RON',
-            'nume' => $data['customer']['name'] ?? null,
-            'cnp' => $data['customer']['cnp'] ?? null,
-            'ciserie' => null,
-            'cinr' => null,
-            'cipol' => null,
-            'auto' => null,
-            'nrauto' => null,
+            'nume' => ' ',
+            'cnp' =>  ' ',
+            'ciserie' => ' ',
+            'cinr' => ' ',
+            'cipol' => '',
+            'auto' =>  ' ',
+            'nrauto' => $data['auto'] ?? ' ',
             'datafact' => now(),
-            'datascad' => now()->addDays(30),
+            'datascad' => now(),
             'data' => now(),
             'compid' => $compId,
-            'tip' => 'F',
-            'nrfactspec' => null,
+            'tip' => 'CP',
+            'nrfactspec' => 'FB1202503' . $factNo,
             'idpers' => 0,
             'costtot' => 0,
             'avans' => false,
-        ]);
+        ];
+        return parent::create($dataToAdd);
     }
 
     /**
@@ -302,5 +304,10 @@ class TrzFactBf extends Model
     public function client()
     {
         return $this->belongsTo(Client::class, 'idcl', 'idcl');
+    }
+
+    protected static function getPriceWithoutVat($priceWithVat, $vatRate = 0.21)
+    {
+        return round($priceWithVat / (1 + $vatRate), 10);
     }
 }

@@ -76,12 +76,7 @@ class BonDatabaseService
         $trzCfe = TrzCfePOS::createFromPOS($data);
         $nrBon = $trzCfe->nrbonfint ?? null;
         $this->saveDetCf($data, $nrBon);
-        $this->savePartial($data);
-
-        //Save facura
-
-        $fact = TrzFactBf::createFromPOS($request->all());
-        $this->saveFacturaDet($request->all(), $fact);
+        $this->savePartial($data); 
     }
 
     protected function saveFacturaDet($data, $fact)
@@ -119,7 +114,27 @@ class BonDatabaseService
             $trzCfePOS = TrzCfe::createFromPOS($partial,$gest);
             $nrBon = $trzCfePOS->nrbonfint ?? null;
             $this->saveDetCf($partial, $nrBon, true);
+            $totalWithoutVat = $this->calculateTotalWithoutVat($partial['items']);
+            $fact = TrzFactBf::createFromPOS($partial, $totalWithoutVat);
+            $this->saveFacturaDet($partial, $fact);
         }
+    }
+
+    protected function calculateTotalWithoutVat($dataItems)
+    {
+        $total = 0;
+        foreach ($dataItems as $item) {
+            if($item['product']['departament'] == 1){
+                $tva = $item['product']['tax1'];
+            }elseif($item['product']['departament'] == 2){
+                $tva = $item['product']['tax2'];
+            }elseif($item['product']['departament'] == 3){
+                $tva = $item['product']['tax3'];
+            }
+            $total += $item['unitPrice'] * $item['qty'] / (1 + $tva);
+           
+        }
+        return round($total, 10);
     }
 
     protected function saveDetCf($data,$nrBon, $usePOSModel = false)

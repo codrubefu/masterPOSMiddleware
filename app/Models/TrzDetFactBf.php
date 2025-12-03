@@ -100,7 +100,7 @@ class TrzDetFactBf extends Model
     public static function createDetail(array $data, array $client, $nrFact)
     {
         $compId = 'AriPos' . ($data['casa'] ?? 1);
-        
+
         // Calculate VAT based on department
         $tva = 0.21; // Default VAT rate
         if (isset($data['product']['departament'])) {
@@ -118,7 +118,16 @@ class TrzDetFactBf extends Model
         $valoare = $price * $qty;
         $tvaAmount = round($valoare * $tva, 2);
 
-        return static::create([
+            if($data['product']['departament'] == 1){
+                $tva = $data['product']['tax1'];
+            }elseif($data['product']['departament'] == 2){
+                $tva = $data['product']['tax2'];
+            }elseif($data['product']['departament'] == 3){
+                $tva = $data['product']['tax3'];
+            }
+           
+        
+        $dataValues = [
             'idfirma' => 1,
             'nrfact' => $nrFact,
             'idcl' => $client['id'] ?? null,
@@ -127,18 +136,21 @@ class TrzDetFactBf extends Model
             'art' => $data['product']['name'] ?? null,
             'cant' => $qty,
             'cantf' => $qty,
-            'pretueur' => 0.00,
-            'preturon' => $price,
-            'redabs' => $data['redabs'] ?? 0.00,
-            'redproc' => $data['redproc'] ?? 0.00,
-            'valoare' => $valoare,
-            'tva' => $tvaAmount,
+            'pretueur' => null,
+            'preturon' => self::getPriceWithoutVat($price, $tva), // pret pe unitate fara tva 10 decimal
+            'redabs' => null,
+            'redproc' => 0.00,
+            'valoare' => $valoare, // total fara tva
+            'tva' => $tvaAmount, //  tva produs pe toal
             'data' => now(),
             'compid' => $compId,
             'detkit' => '0',
             'preturondisc' => $price,
-            'cotatva' => $tva,
-        ]);
+            'cotatva' => $tva, // 0.21
+        ];
+
+        dd($dataValues);
+        return static::create($dataValues);
     }
 
     /**
@@ -200,7 +212,7 @@ class TrzDetFactBf extends Model
         $price = $this->preturon ?? 0;
         $absDiscount = $this->redabs ?? 0;
         $percDiscount = $this->redproc ?? 0;
-        
+
         return round($price - $absDiscount - ($price * $percDiscount / 100), 2);
     }
 
@@ -232,5 +244,10 @@ class TrzDetFactBf extends Model
     public function client()
     {
         return $this->belongsTo(Client::class, 'idcl', 'idcl');
+    }
+
+    protected static function getPriceWithoutVat($priceWithVat, $vatRate = 0.21)
+    {
+        return round($priceWithVat / (1 + $vatRate), 10);
     }
 }
