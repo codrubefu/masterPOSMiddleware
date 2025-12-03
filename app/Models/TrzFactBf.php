@@ -160,17 +160,7 @@ class TrzFactBf extends Model
      */
     public static function createFromPOS(array $data, $totalWithoutVat)
     {
-        // Determine payment type
-        $paymentType = 'NUMERAR'; // Default to cash
-        if (isset($data['type'])) {
-            if ($data['type'] == 'cash') {
-                $paymentType = 'NUMERAR';
-            } elseif ($data['type'] == 'card') {
-                $paymentType = 'CARD';
-            } else {
-                $paymentType = 'MIXT'; // Mixed payment
-            }
-        }
+
 
         $compId = 'AriPos' . ($data['casa'] ?? 1);  
         // Get the biggest nrfact value from database

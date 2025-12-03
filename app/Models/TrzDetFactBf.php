@@ -116,17 +116,16 @@ class TrzDetFactBf extends Model
         $price = $data['product']['price'] ?? 0;
         $qty = $data['qty'] ?? 0;
         $valoare = $price * $qty;
-        $tvaAmount = round($valoare * $tva, 2);
 
-            if($data['product']['departament'] == 1){
-                $tva = $data['product']['tax1'];
-            }elseif($data['product']['departament'] == 2){
-                $tva = $data['product']['tax2'];
-            }elseif($data['product']['departament'] == 3){
-                $tva = $data['product']['tax3'];
-            }
-           
-        
+        if ($data['product']['departament'] == 1) {
+            $tva = $data['product']['tax1'];
+        } elseif ($data['product']['departament'] == 2) {
+            $tva = $data['product']['tax2'];
+        } elseif ($data['product']['departament'] == 3) {
+            $tva = $data['product']['tax3'];
+        }
+        $priceWithoutVat = self::getPriceWithoutVat($price, $tva);
+
         $dataValues = [
             'idfirma' => 1,
             'nrfact' => $nrFact,
@@ -137,11 +136,11 @@ class TrzDetFactBf extends Model
             'cant' => $qty,
             'cantf' => $qty,
             'pretueur' => null,
-            'preturon' => self::getPriceWithoutVat($price, $tva), // pret pe unitate fara tva 10 decimal
+            'preturon' => $priceWithoutVat, // pret pe unitate fara tva 10 decimal
             'redabs' => null,
             'redproc' => 0.00,
             'valoare' => $valoare, // total fara tva
-            'tva' => $tvaAmount, //  tva produs pe toal
+            'tva' => $valoare - ($priceWithoutVat * $qty), //  tva produs pe toal
             'data' => now(),
             'compid' => $compId,
             'detkit' => '0',
