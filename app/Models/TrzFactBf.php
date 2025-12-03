@@ -193,7 +193,7 @@ class TrzFactBf extends Model
             'cinr' => ' ',
             'cipol' => '',
             'auto' =>  ' ',
-            'nrauto' => $data['auto'] ?? ' ',
+            'nrauto' => $data['customer']['nrAuto'] ?? ' ',
             'datafact' => now(),
             'datascad' => now(),
             'data' => now(),

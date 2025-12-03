@@ -148,7 +148,6 @@ class TrzDetFactBf extends Model
             'cotatva' => $tva, // 0.21
         ];
 
-        dd($dataValues);
         return static::create($dataValues);
     }
 
