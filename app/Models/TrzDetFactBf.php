@@ -147,7 +147,6 @@ class TrzDetFactBf extends Model
             'preturondisc' => $price,
             'cotatva' => $tva, // 0.21
         ];
-
         return static::create($dataValues);
     }
 
