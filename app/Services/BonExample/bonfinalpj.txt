@@ -1,8 +1,6 @@
 48, 1	0001	1			
-49,Tratament de hidratare si anti	1	234.00	1.000			1	buc	
-49,Tratament de hidratare si anti	1	234.00	1.000			1	buc	
-49,Tatament medical comercializat	3	516.00	1.000			3	buc	
-53,1		
+%s
+53,%s		
 54,************************	0	0	0	0	0	0	
 54,Ines	0	0	0	0	0	0	
 54,Matei	0	0	0	0	0	0	
