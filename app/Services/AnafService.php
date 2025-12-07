@@ -123,13 +123,7 @@ class AnafService
      */
     public function saveClientFromAnafData(array $anafData)
     {
-        $dateGenerale = $anafData['date_generale'] ?? [];
-        $inregistrareScpTva = $anafData['inregistrare_scop_Tva'] ?? [];
-        $inregistrareRtvai = $anafData['inregistrare_RTVAI'] ?? [];
-        $stareInactiv = $anafData['stare_inactiv'] ?? [];
-        $inregistrareSplitTva = $anafData['inregistrare_SplitTVA'] ?? [];
-        $adresaSediuSocial = $anafData['adresa_sediu_social'] ?? [];
-        $adresaDomiciliuFiscal = $anafData['adresa_domiciliu_fiscal'] ?? [];
+
 
         // Find or create client by CUI
         $client = Client::where('cui', $dateGenerale['cui'] ?? null)->first();
@@ -138,76 +132,6 @@ class AnafService
             $client = new Client();
         }
 
-        // Update client data
-        $client->cui = $dateGenerale['cui'] ?? null;
-        $client->nume = $dateGenerale['denumire'] ?? null;
-        $client->adresa = $dateGenerale['adresa'] ?? null;
-        $client->nrRegCom = $dateGenerale['nrRegCom'] ?? null;
-        $client->telefon = $dateGenerale['telefon'] ?? null;
-        $client->fax = $dateGenerale['fax'] ?? null;
-        $client->codPostal = $dateGenerale['codPostal'] ?? null;
-        $client->act = $dateGenerale['act'] ?? null;
-        $client->stare_inregistrare = $dateGenerale['stare_inregistrare'] ?? null;
-        $client->data_inregistrare = $dateGenerale['data_inregistrare'] ?? null;
-        $client->cod_CAEN = $dateGenerale['cod_CAEN'] ?? null;
-        $client->iban = $dateGenerale['iban'] ?? null;
-        $client->statusRO_e_Factura = ($dateGenerale['statusRO_e_Factura'] ?? false) ? 1 : 0;
-        $client->organFiscalCompetent = $dateGenerale['organFiscalCompetent'] ?? null;
-        $client->forma_de_proprietate = $dateGenerale['forma_de_proprietate'] ?? null;
-        $client->forma_organizare = $dateGenerale['forma_organizare'] ?? null;
-        $client->forma_juridica = $dateGenerale['forma_juridica'] ?? null;
-
-        // VAT registration fields
-        $client->scpTVA = ($inregistrareScpTva['scpTVA'] ?? false) ? 1 : 0;
-        $perioade = $inregistrareScpTva['perioade_TVA'] ?? [];
-        $client->data_inceput_ScpTVA = $perioade['data_inceput_ScpTVA'] ?? null;
-        $client->data_sfarsit_ScpTVA = $perioade['data_sfarsit_ScpTVA'] ?? null;
-        $client->data_anul_imp_ScpTVA = $perioade['data_anul_imp_ScpTVA'] ?? null;
-        $client->mesaj_ScpTVA = $perioade['mesaj_ScpTVA'] ?? null;
-
-        // TVA la incasare (cash accounting VAT)
-        $client->dataInceputTvaInc = $inregistrareRtvai['dataInceputTvaInc'] ?? null;
-        $client->dataSfarsitTvaInc = $inregistrareRtvai['dataSfarsitTvaInc'] ?? null;
-        $client->dataActualizareTvaInc = $inregistrareRtvai['dataActualizareTvaInc'] ?? null;
-        $client->dataPublicareTvaInc = $inregistrareRtvai['dataPublicareTvaInc'] ?? null;
-        $client->tipActTvaInc = $inregistrareRtvai['tipActTvaInc'] ?? null;
-        $client->statusTvaIncasare = ($inregistrareRtvai['statusTvaIncasare'] ?? false) ? 1 : 0;
-
-        // Inactive/Reactive status
-        $client->dataInactivare = $stareInactiv['dataInactivare'] ?? null;
-        $client->dataReactivare = $stareInactiv['dataReactivare'] ?? null;
-        $client->dataPublicare = $stareInactiv['dataPublicare'] ?? null;
-        $client->dataRadiere = $stareInactiv['dataRadiere'] ?? null;
-        $client->statusInactivi = ($stareInactiv['statusInactivi'] ?? false) ? 1 : 0;
-
-        // Split TVA (deferred VAT payment)
-        $client->dataInceputSplitTVA = $inregistrareSplitTva['dataInceputSplitTVA'] ?? null;
-        $client->dataAnulareSplitTVA = $inregistrareSplitTva['dataAnulareSplitTVA'] ?? null;
-        $client->statusSplitTVA = ($inregistrareSplitTva['statusSplitTVA'] ?? false) ? 1 : 0;
-
-        // Social headquarters address
-        $client->sdenumire_Strada = $adresaSediuSocial['sdenumire_Strada'] ?? null;
-        $client->snumar_Strada = $adresaSediuSocial['snumar_Strada'] ?? null;
-        $client->sdenumire_Localitate = $adresaSediuSocial['sdenumire_Localitate'] ?? null;
-        $client->scod_Localitate = $adresaSediuSocial['scod_Localitate'] ?? null;
-        $client->sdenumire_Judet = $adresaSediuSocial['sdenumire_Judet'] ?? null;
-        $client->scod_Judet = $adresaSediuSocial['scod_Judet'] ?? null;
-        $client->scod_JudetAuto = $adresaSediuSocial['scod_JudetAuto'] ?? null;
-        $client->stara = $adresaSediuSocial['stara'] ?? null;
-        $client->sdetalii_Adresa = $adresaSediuSocial['sdetalii_Adresa'] ?? null;
-        $client->scod_Postal = $adresaSediuSocial['scod_Postal'] ?? null;
-
-        // Fiscal domicile address
-        $client->ddenumire_Strada = $adresaDomiciliuFiscal['ddenumire_Strada'] ?? null;
-        $client->dnumar_Strada = $adresaDomiciliuFiscal['dnumar_Strada'] ?? null;
-        $client->ddenumire_Localitate = $adresaDomiciliuFiscal['ddenumire_Localitate'] ?? null;
-        $client->dcod_Localitate = $adresaDomiciliuFiscal['dcod_Localitate'] ?? null;
-        $client->ddenumire_Judet = $adresaDomiciliuFiscal['ddenumire_Judet'] ?? null;
-        $client->dcod_Judet = $adresaDomiciliuFiscal['dcod_Judet'] ?? null;
-        $client->dcod_JudetAuto = $adresaDomiciliuFiscal['dcod_JudetAuto'] ?? null;
-        $client->dtara = $adresaDomiciliuFiscal['dtara'] ?? null;
-        $client->ddetalii_Adresa = $adresaDomiciliuFiscal['ddetalii_Adresa'] ?? null;
-        $client->dcod_Postal = $adresaDomiciliuFiscal['dcod_Postal'] ?? null;
 
         // Save last ANAF check date
         $client->last_anaf_check = now();

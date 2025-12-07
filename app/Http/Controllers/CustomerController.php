@@ -17,15 +17,24 @@ class CustomerController extends Controller
     {
         // Find customer by cardId
         $client = Client::where('cnpcui', trim($id))->first();
+        
+        // Load from anaf
 
-        if (!$client) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Customer not found',
-                'data' => null
-            ], 404);
+       
+        if(!$client) {
+            $anafService = new \App\Services\AnafService();
+            $anafData = $anafService->verifyVatStatus($id);
+            if(!isset($anafData['found']) || empty($anafData['found'])) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Customer not found',
+                    'data' => null
+                ], 404);
+            }
+
+            $client = Client::saveFromAnafData($anafData['found'][0]);
         }
-
+        
         // Format response according to specified structure
         $customerData = [
             'id' => $client->idcl,
