@@ -153,6 +153,8 @@ class ArticleController extends Controller
             'price' => trim($this->getPrice($quantity, $prices)),
             'quantity' => $quantity,
             'departament' => $product->depart,
+            'clasa' => $product->clasa,
+            'grupa' => $product->grupa,
             'gest' => $product->gest,
             'tax1' => $product->tax1,
             'tax2' => $product->tax2,

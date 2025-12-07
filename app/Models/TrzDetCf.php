@@ -112,27 +112,27 @@ class TrzDetCf extends Model
         if ($data['casa'] == 1) {
             if ($data['product']['gest'] == 3) {
                 $casa = 8;
-                $compId = 'POS' . $data['casa'] . '-D'; // Default compId
+                $compId = 'POS' . $data['casa'] . 'D'; // Default compId
             } else {
                 $casa = 9;
-                $compId = 'POS' . $data['casa'] . '-B';
+                $compId = 'POS' . $data['casa'] . 'B';
             }
         } elseif ($data['casa'] == 2) {
             if ($data['product']['gest'] == 3) {
                 $casa = 10;
-                $compId = 'POS' . $data['casa'] . '-D'; // Default compId
+                $compId = 'POS' . $data['casa'] . 'D'; // Default compId
             } else {
                 $casa = 11;
-                $compId = 'POS' . $data['casa'] . '-B';
+                $compId = 'POS' . $data['casa'] . 'B';
             }
         } elseif ($data['casa'] == 3) {
 
             if ($data['product']['gest'] == 3) {
                 $casa = 12;
-                $compId = 'POS' . $data['casa'] . '-D'; // Default compId
+                $compId = 'POS' . $data['casa'] . 'D'; // Default compId
             } else {
                 $casa = 13;
-                $compId = 'POS' . $data['casa'] . '-B';
+                $compId = 'POS' . $data['casa'] . 'B';
             }
         }
 

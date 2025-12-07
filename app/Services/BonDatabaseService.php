@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\TrzCfePOS;
 use App\Models\TrzDetCfPOS;
 use App\Models\TrzDetCf;
+use App\Models\TrzFactBf;
+use App\Models\TrzDetFactBf;
 
 class BonDatabaseService
 {
@@ -77,6 +79,14 @@ class BonDatabaseService
         $this->savePartial($data);
     }
 
+    protected function saveFacturaDet($data, $fact)
+    {
+        $nrFact = $fact->nrfact ?? null;
+        foreach ($data['items'] as $item) {
+            TrzDetFactBf::createDetail($item, $data['customer'], $nrFact);
+        }
+    }
+
     protected function savePartial($data)
     {
         // Split items by departament
@@ -86,9 +96,9 @@ class BonDatabaseService
             $grouped[$gest][] = $item;
         }
 
-        foreach ($grouped as $gest=>$dept) {
+        foreach ($grouped as $gest => $dept) {
 
-            $partial['subtotal'] = array_sum(array_map(function($i) {
+            $partial['subtotal'] = array_sum(array_map(function ($i) {
                 return $i['unitPrice'] * $i['qty'];
             }, $dept));
             $partial['items'] = $dept;
@@ -101,22 +111,44 @@ class BonDatabaseService
             $partial['change'] = $data['change'];
             $partial['pendingPayment'] = $data['pendingPayment'] ?? null;
 
-            $trzCfePOS = TrzCfe::createFromPOS($partial,$gest);
+            $trzCfePOS = TrzCfe::createFromPOS($partial, $gest);
             $nrBon = $trzCfePOS->nrbonfint ?? null;
             $this->saveDetCf($partial, $nrBon, true);
+            $totalWithoutVat = $this->calculateTotalWithoutVat($partial['items']);
+            
+            if ($data['customer']['type'] == 'pj') {
+                $fact = TrzFactBf::createFromPOS($partial, $totalWithoutVat);
+                $this->saveFacturaDet($partial, $fact);
+            }
         }
     }
 
-    protected function saveDetCf($data,$nrBon, $usePOSModel = false)
+    protected function calculateTotalWithoutVat($dataItems)
+    {
+        $total = 0;
+        foreach ($dataItems as $item) {
+            if ($item['product']['departament'] == 1) {
+                $tva = $item['product']['tax1'];
+            } elseif ($item['product']['departament'] == 2) {
+                $tva = $item['product']['tax2'];
+            } elseif ($item['product']['departament'] == 3) {
+                $tva = $item['product']['tax3'];
+            }
+            $total += $item['unitPrice'] * $item['qty'] / (1 + $tva);
+        }
+        return round($total, 10);
+    }
+
+    protected function saveDetCf($data, $nrBon, $usePOSModel = false)
     {
         // Use the model's helper method for cleaner code
         foreach ($data['items'] as $item) {
-            if($usePOSModel) {
-                TrzDetCf::createDetail($item,$data['customer'], $nrBon);
-            }else{ 
-                TrzDetCfPOS::createDetail($item,$data['customer'], $nrBon);
-            } 
-        }  
+            if ($usePOSModel) {
+                TrzDetCf::createDetail($item, $data['customer'], $nrBon);
+            } else {
+                TrzDetCfPOS::createDetail($item, $data['customer'], $nrBon);
+            }
+        }
     }
 
     protected function deleteSGR(array $items): array
@@ -125,7 +157,7 @@ class BonDatabaseService
             $upc = trim($item['product']['upc'] ?? '');
             return !in_array($upc, $this->sgrUpcs, true);
         }));
-    } 
+    }
 
     protected function addSgr(array $items): array
     {
@@ -155,6 +187,4 @@ class BonDatabaseService
 
         return $itemsWithSgr;
     }
-
-    
 }
