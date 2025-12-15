@@ -171,8 +171,13 @@ class Client extends Model
 
     public static function saveFromAnafData(array $data)
     {
+        $cui = $data['date_generale']['cui'];
+        if ($data['inregistrare_scop_Tva']['scpTVA'] === true) {
+            $cui = 'RO' . $data['date_generale']['cui'];
+        }
+        
         $clientData = [
-            'cnpcui' => $data['date_generale']['cui'],
+            'cnpcui' => $cui,
             'activ' => 1,
             'den' => $data['date_generale']['denumire'],
             'prenume' => ' ',
@@ -252,13 +257,13 @@ class Client extends Model
             'litigiu' => 0,
             'cudesc2infact' => 0,
             'idagent' => 0,
-            'extern' => 0,  
+            'extern' => 0,
             'codtpd' => null,
             'banca' => 'XX',
             'cont' => 'XXXX',
             'datacodsaga' => now(),
             'guvern' => 0
-            ] ;
+        ];
         $client = parent::create($clientData);
         return $client;
     }
