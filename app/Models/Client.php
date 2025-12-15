@@ -179,7 +179,7 @@ class Client extends Model
             'adresa1' => $data['date_generale']['adresa'],
             'adresa2' => ' ',
             'oras' => $data['adresa_sediu_social']['sdenumire_Localitate'],
-            'judet' => $data['adresa_sediu_social']['sdenumire_Judet'],
+            'judet' => $data['adresa_sediu_social']['scod_Judet'] ?? 40,
             'tara' => 1,
             'reg' => ' ',
             'cp' => ' ',
