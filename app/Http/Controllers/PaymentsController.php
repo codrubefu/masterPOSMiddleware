@@ -59,8 +59,8 @@ class PaymentsController extends Controller
      */
     public function payment(Request $request, BonDatabaseService $bonDatabaseService)
     {
-            $this->bonService->writeBonFinal($request->all());
-            $bonDatabaseService->save($request);
+            //$this->bonService->writeBonFinal($request->all());
+            //$bonDatabaseService->save($request);
             $currentBon = 12;
             return response()->json([
                 'success' => true,
