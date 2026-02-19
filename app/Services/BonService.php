@@ -169,6 +169,7 @@ class BonService
             $finalContent = sprintf($template, $itemsContent,$code);
 
         }
+
         return $this->writeToBonFile($data['casa'], $finalContent);
          
     }
