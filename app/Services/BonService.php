@@ -91,7 +91,6 @@ class BonService
         }
         
         $entryFilePath = $casaPath . '/bon.txt';
-        
         if (file_put_contents($entryFilePath, $content) === false) {
             throw new \Exception('Failed to write to bon file.');
         }
@@ -144,8 +143,8 @@ class BonService
         else{
             $cardAmount = $data['cardAmount'] ?? 0;
             $cashAmount = $data['numerarAmount'] ?? 0;
-            $codes[] = '53,0   '.$cashAmount;
-            $codes[] = '53,1   '.$cardAmount;
+            $codes[] = sprintf("53,%s	%s", 0, $cashAmount);
+            $codes[] = sprintf("53,%s	%s", 1, $cardAmount);
             $code = implode("\n", $codes);
         }
         
