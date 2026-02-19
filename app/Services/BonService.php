@@ -135,10 +135,10 @@ class BonService
        
         $lines = [];
         if($data['type']=='cash'){
-            $code = '53,0';
+              $code = sprintf("53,%s	", 1);
         }
         elseif($data['type']=='card'){
-            $code = '53,1';
+            $code = sprintf("53,%s	", 0);
         }
         else{
             $cardAmount = $data['cardAmount'] ?? 0;
