@@ -136,13 +136,17 @@ class BonService
        
         $lines = [];
         if($data['type']=='cash'){
-            $code = 0;
+            $code = '53,0';
         }
         elseif($data['type']=='card'){
-            $code = 1;
+            $code = '53,1';
         }
         else{
-            $code = 2;
+            $cardAmount = $data['cardAmount'] ?? 0;
+            $cashAmount = $data['cashAmount'] ?? 0;
+            $codes[] = '53,0   '.$cashAmount;
+            $codes[] = '53,1   '.$cardAmount;
+            $code = implode("\n", $codes);
         }
         
         foreach ($data['items'] as $item) {
