@@ -143,7 +143,7 @@ class BonService
         }
         else{
             $cardAmount = $data['cardAmount'] ?? 0;
-            $cashAmount = $data['cashAmount'] ?? 0;
+            $cashAmount = $data['numerarAmount'] ?? 0;
             $codes[] = '53,0   '.$cashAmount;
             $codes[] = '53,1   '.$cardAmount;
             $code = implode("\n", $codes);
