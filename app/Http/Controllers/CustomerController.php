@@ -32,8 +32,9 @@ class CustomerController extends Controller
                 ], 404);
             }
 
-            $client = Client::saveFromAnafData($anafData['found'][0]);
-        }
+            Client::saveFromAnafData($anafData['found'][0]);
+            $client = Client::where('cnpcui', trim($id))->first();
+        }   
         
         // Format response according to specified structure
         $customerData = [
