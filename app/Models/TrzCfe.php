@@ -166,13 +166,34 @@ class TrzCfe extends Model
                 $paymentType = 'ppRON'; // Mixed payment
             }
         }
+        
+        if ($data['casa'] == 1) {
+            if ($gest == 3) {
+                $casa = 8;
+                $compId = 'POS' . $data['casa'] . 'D'; // Default compId
+            } else {
+                $casa = 9;
+                $compId = 'POS' . $data['casa'] . 'B';
+            }
+        } elseif ($data['casa'] == 2) {
+            if ($gest == 3) {
+                $casa = 10;
+                $compId = 'POS' . $data['casa'] . 'D'; // Default compId
+            } else {
+                $casa = 11;
+                $compId = 'POS' . $data['casa'] . 'B';
+            }
+        } elseif ($data['casa'] == 3) {
 
-        if ($gest == 3) {
-            $compId = 'POS' . $data['casa'] . '-D'; // Default compId
-        } else {
-            $compId = 'POS' . $data['casa'] . '-B'; // Default compId
+            if ($gest == 3) {
+                $casa = 12;
+                $compId = 'POS' . $data['casa'] . 'D'; // Default compId
+            } else {
+                $casa = 13;
+                $compId = 'POS' . $data['casa'] . 'B';
+            }
         }
-
+        
         return parent::create([
             'idfirma' => 1,
             'idcl' => $data['customer']['id'] ??  $data['customer']['id'] ?? 1,
@@ -192,7 +213,7 @@ class TrzCfe extends Model
             'costtot' => null,
             'chit' => false,
             'idtrzcf' => null,
-            'casa' => $data['casa'] ?? 1,
+            'casa' => $casa ?? 1,
             'nrdispliv' => 0,
             'nrbontrzcfeaux' => null,
             'idlogin' => 0,
