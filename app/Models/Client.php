@@ -169,13 +169,49 @@ class Client extends Model
         'datacodsaga' => 'datetime',
     ];
 
+
+    public static function normalizeTaxIdentifier($identifier): string
+    {
+        $value = strtoupper(trim((string) $identifier));
+
+        return preg_replace('/\s+/', '', $value);
+    }
+
+    public static function taxIdentifierCandidates($identifier): array
+    {
+        $normalized = static::normalizeTaxIdentifier($identifier);
+        $numeric = preg_replace('/^RO/i', '', $normalized);
+
+        $candidates = array_filter([
+            $normalized,
+            $numeric,
+            'RO' . $numeric,
+        ], fn ($value) => $value !== '');
+
+        return array_values(array_unique($candidates));
+    }
+
+    public static function findByTaxIdentifier($identifier): ?self
+    {
+        $candidates = static::taxIdentifierCandidates($identifier);
+        if (empty($candidates)) {
+            return null;
+        }
+
+        return static::whereIn('cnpcui', $candidates)->first();
+    }
+
     public static function saveFromAnafData(array $data)
     {
-        $cui = $data['date_generale']['cui'];
-        if ($data['inregistrare_scop_Tva']['scpTVA'] === true) {
-            $cui = 'RO' . $data['date_generale']['cui'];
+        $baseCui = static::normalizeTaxIdentifier($data['date_generale']['cui'] ?? '');
+        $cui = $baseCui;
+
+        if (($data['inregistrare_scop_Tva']['scpTVA'] ?? false) === true) {
+            $cui = 'RO' . $baseCui;
         }
-        
+
+        $existingClient = static::findByTaxIdentifier($cui);
+
         $clientData = [
             'cnpcui' => $cui,
             'activ' => 1,
@@ -264,7 +300,13 @@ class Client extends Model
             'datacodsaga' => now(),
             'guvern' => 0
         ];
-        $client = parent::create($clientData);
-        return $client;
+        if ($existingClient) {
+            $existingClient->fill($clientData);
+            $existingClient->save();
+
+            return $existingClient;
+        }
+
+        return static::create($clientData);
     }
 }
