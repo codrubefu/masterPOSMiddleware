@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Client;
 
 class CustomerController extends Controller
@@ -15,26 +14,21 @@ class CustomerController extends Controller
      */
     public function show($id)
     {
-        // Find customer by cardId
-        $client = Client::where('cnpcui', trim($id))->first();
-        
-        // Load from anaf
+        $client = Client::findByTaxIdentifier($id);
 
-       
-        if(!$client) {
+        if (!$client) {
             $anafService = new \App\Services\AnafService();
             $anafData = $anafService->verifyVatStatus($id);
-            if(!isset($anafData['found']) || empty($anafData['found'])) {
+            if (!isset($anafData['found']) || empty($anafData['found'])) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Customer not found',
-                    'data' => null
+                    'data' => null,
                 ], 404);
             }
 
-            Client::saveFromAnafData($anafData['found'][0]);
-            $client = Client::where('cnpcui', trim($id))->first();
-        }   
+            $client = Client::saveFromAnafData($anafData['found'][0]);
+        }
         
         // Format response according to specified structure
         $customerData = [
