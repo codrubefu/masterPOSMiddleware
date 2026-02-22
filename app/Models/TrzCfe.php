@@ -153,7 +153,7 @@ class TrzCfe extends Model
      * @param Company|null $company Company instance
      * @return static
      */
-    public static function createFromPOS(array $data, $gest = null)
+    public static function createFromPOS(array $data, $gest = null, $nrbonfintPOS = null)
     {
         // Determine payment type
         $paymentType = 'numRON'; // Default to cash
@@ -226,6 +226,7 @@ class TrzCfe extends Model
             'cuibf' => $data['customer']['cui'] ?? 0,
             'idrapz' => 0,
             'anulat' => false,
+            'nrbonfintPOS' => $nrbonfintPOS
         ]);
     }
 
