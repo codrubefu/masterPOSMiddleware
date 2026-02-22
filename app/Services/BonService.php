@@ -216,17 +216,49 @@ class BonService
     public function isPaymentDone($casa): bool
     {
         $company = Company::first();
-        $bon = $this->casaFiles[$casa]['path'].'\BONERR\bonerr'.$company->nrbfdude .'.txt';
-        if( !file_exists($bon) ){
+        $bonErrPath = $this->casaFiles[$casa]['path'].'\BONERR';
+
+        if (!is_dir($bonErrPath)) {
             return false;
         }
 
-        $bonContent = file_get_contents($bon);
-        // Check if bonContent contains both Command = 56 and Command = 53
-        $hasCommand56 = strpos($bonContent, 'Command = 56') !== false;
-        $hasCommand53 = strpos($bonContent, 'Command = 53') !== false;
-        
-        return $hasCommand56 && $hasCommand53;
+        $candidateFiles = [];
+
+        if ($company !== null) {
+            $expectedBon = $bonErrPath.'\bonerr'.$company->nrbfdude.'.txt';
+            if (file_exists($expectedBon)) {
+                $candidateFiles[] = $expectedBon;
+            }
+        }
+
+        foreach (glob($bonErrPath.'\bonerr*.txt') ?: [] as $filePath) {
+            $candidateFiles[] = $filePath;
+        }
+
+        $candidateFiles = array_values(array_unique($candidateFiles));
+        if (empty($candidateFiles)) {
+            return false;
+        }
+
+        usort($candidateFiles, static function (string $left, string $right): int {
+            return filemtime($right) <=> filemtime($left);
+        });
+
+        foreach ($candidateFiles as $bonFilePath) {
+            $bonContent = file_get_contents($bonFilePath);
+            if ($bonContent === false) {
+                continue;
+            }
+
+            $hasCommand56 = strpos($bonContent, 'Command = 56') !== false;
+            $hasCommand53 = strpos($bonContent, 'Command = 53') !== false;
+
+            if ($hasCommand56 && $hasCommand53) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
