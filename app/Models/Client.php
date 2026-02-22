@@ -257,7 +257,7 @@ class Client extends Model
             'listapreturi' => 1,
             'dataultvanz' => null,
             'dataultincasari' => null,
-            'soldcurent' => null,
+            'soldcurent' => 0,
             'datansf' => null,
             'ultvanz' => null,
             'vanzluna' => null,

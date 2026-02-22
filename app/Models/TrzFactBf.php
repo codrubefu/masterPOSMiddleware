@@ -199,7 +199,7 @@ class TrzFactBf extends Model
             'data' => now(),
             'compid' => $compId,
             'tip' => 'CP',
-            'nrfactspec' => 'FB1202503' . $factNo,
+            'nrfactspec' => 'FB1202603' . $factNo,
             'idpers' => 1,
             'costtot' => 0,
             'avans' => false,

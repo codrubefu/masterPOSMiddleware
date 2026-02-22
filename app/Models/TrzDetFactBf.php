@@ -138,12 +138,12 @@ class TrzDetFactBf extends Model
             'preturon' => $priceWithoutVat, // pret pe unitate fara tva 10 decimal
             'redabs' => null,
             'redproc' => 0.00,
-            'valoare' => $valoare, // total fara tva
+            'valoare' => $priceWithoutVat * $qty, // total fara tva
             'tva' => $valoare - ($priceWithoutVat * $qty), //  tva produs pe toal
             'data' => now(),
             'compid' => $compId,
             'detkit' => '0',
-            'preturondisc' => $price,
+            'preturondisc' => $priceWithoutVat,
             'cotatva' => $tva, // 0.21
         ];
         return static::create($dataValues);

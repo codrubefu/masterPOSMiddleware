@@ -72,6 +72,7 @@ class TrzCfe extends Model
         'cuibf', // 0 sau CUI persoana juridica
         'idrapz', // 0
         'anulat', // false
+        'nrbonfintPOS', // NULL
     ];
 
     /**
@@ -112,6 +113,7 @@ class TrzCfe extends Model
         'cuibf' => 'integer',
         'idrapz' => 'integer',
         'anulat' => 'boolean',
+        'nrbonfintPOS' => 'integer',
     ];
 
     /**
@@ -228,6 +230,11 @@ class TrzCfe extends Model
             'anulat' => false,
             'nrbonfintPOS' => $nrbonfintPOS
         ]);
+    }
+
+    public function scopeLastSaved($query)
+    {
+        return $query->orderBy('created_at', 'desc')->first();
     }
 
     /**

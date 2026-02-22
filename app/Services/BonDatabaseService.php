@@ -73,10 +73,11 @@ class BonDatabaseService
         $data = $request->all();
         $data['items'] = $this->deleteSGR($data['items'] ?? []);
         $data['items'] = $this->addSgr($data['items'] ?? []);
-        $trzCfe = TrzCfePOS::createFromPOS($data);
+        TrzCfePOS::createFromPOS($data);
+        $trzCfe = TrzCfePOS::lastSaved();
         $nrBon = $trzCfe->nrbonfint ?? null;
         $this->saveDetCf($data, $nrBon);
-        $this->savePartial($data);
+        $this->savePartial($data, $trzCfe->nrbonfint ?? null);
     }
 
     protected function saveFacturaDet($data, $fact)
@@ -87,7 +88,7 @@ class BonDatabaseService
         }
     }
 
-    protected function savePartial($data)
+    protected function savePartial($data, $nrBonfintPOS = null)
     {
         // Split items by departament
         $grouped = [];
@@ -111,7 +112,7 @@ class BonDatabaseService
             $partial['change'] = $data['change'];
             $partial['pendingPayment'] = $data['pendingPayment'] ?? null;
 
-            $trzCfePOS = TrzCfe::createFromPOS($partial, $gest);
+            $trzCfePOS = TrzCfe::createFromPOS($partial, $gest, $nrBonfintPOS);
             $nrBon = $trzCfePOS->nrbonfint ?? null;
             $this->saveDetCf($partial, $nrBon, true);
             $totalWithoutVat = $this->calculateTotalWithoutVat($partial['items']);

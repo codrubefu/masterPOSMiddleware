@@ -198,7 +198,14 @@ class TrzCfePOS extends Model
             'idrapz' => 0,
             'anulat' => false,
         ]);
+        
     }
+
+        public function scopeLastSaved($query)
+    {
+        return $query->orderBy('nrbonfint', 'desc')->first();
+    }
+
 
     public function scopeByCompany($query, $idfirma)
     {
