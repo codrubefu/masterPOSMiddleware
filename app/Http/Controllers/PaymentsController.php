@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TrzCfe;
-use App\Models\TrzDetCf;
 use App\Services\BonDatabaseService;
 use App\Services\BonService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\Company;
 
 class PaymentsController extends Controller
 {
@@ -61,12 +60,13 @@ class PaymentsController extends Controller
     {
             $this->bonService->writeBonFinal($request->all());
             $bonDatabaseService->save($request);
-            $currentBon = 12;
+            $company = Company::first();
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Payment processed successfully',
                 'data' => [
-                    'bon_no' => $currentBon,
+                    'bon_no' => $company->nrbfdude,
                     'processed_at' => now()->toDateTimeString(),
                 ]
             ], 200);

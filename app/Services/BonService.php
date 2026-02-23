@@ -213,10 +213,14 @@ class BonService
         }
     }
 
-    public function isPaymentDone($casa): bool
+    public function isPaymentDone($casa, $bonNo=null): bool
     {
         $company = Company::first();
         $bon = $this->casaFiles[$casa]['path'].'\BONERR\bonerr'.$company->nrbfdude .'.txt';
+        if( !file_exists($bon) ){
+            $bon = $this->casaFiles[$casa]['path'].'\BONERR\bonerr'.$bonNo .'.txt';
+        }
+
         if( !file_exists($bon) ){
             return false;
         }
