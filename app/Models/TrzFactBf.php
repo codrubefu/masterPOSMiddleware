@@ -169,11 +169,11 @@ class TrzFactBf extends Model
         $factNo = str_pad($nrfact, 5, '0', STR_PAD_LEFT);
 
         $totalWithoutVat = array_sum(array_map(function ($i) {
-                return $i['unitPriceWithoutVat'];
+                return $i['unitPriceWithoutVat']* $i['qty'];
             }, $data['items'] ?? []));
 
         $totalVat = array_sum(array_map(function ($i) {
-                return $i['tva'];
+                return $i['tva'] * $i['qty'];
             }, $data['items'] ?? []));
 
         $total = $totalWithoutVat + $totalVat;
