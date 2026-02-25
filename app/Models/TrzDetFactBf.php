@@ -59,6 +59,8 @@ class TrzDetFactBf extends Model
         'detkit',
         'preturondisc',
         'cotatva',
+        'valoare2',
+        'tva2',
     ];
 
     /**
@@ -87,6 +89,8 @@ class TrzDetFactBf extends Model
         'detkit' => 'string',
         'preturondisc' => 'float',
         'cotatva' => 'float',
+        'valoare2' => 'float',
+        'tva2' => 'float',
     ];
 
     /**
