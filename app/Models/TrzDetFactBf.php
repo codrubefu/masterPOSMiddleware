@@ -58,9 +58,7 @@ class TrzDetFactBf extends Model
         'compid',
         'detkit',
         'preturondisc',
-        'cotatva',
-        'valoare2',
-        'tva2',
+        'cotatva'
     ];
 
     /**
@@ -88,9 +86,7 @@ class TrzDetFactBf extends Model
         'idtrzdetfactbf' => 'integer',
         'detkit' => 'string',
         'preturondisc' => 'float',
-        'cotatva' => 'float',
-        'valoare2' => 'float',
-        'tva2' => 'float',
+        'cotatva' => 'float'
     ];
 
     /**
@@ -143,9 +139,9 @@ class TrzDetFactBf extends Model
             'redabs' => null,
             'redproc' => 0.00,
             'valoare' => $priceWithoutVat * $qty, // total fara tva
-            'valoare2' => round($priceWithoutVat * $qty, 2), // total fara tva rotunjit
+            //'valoare2' => round($priceWithoutVat * $qty, 2), // total fara tva rotunjit
             'tva' => $valoare - ($priceWithoutVat * $qty), //  tva produs pe toal
-            'tva2' => round($valoare - ($priceWithoutVat * $qty), 2), // tva produs pe toal rotunjit
+            //'tva2' => round($valoare - ($priceWithoutVat * $qty), 2), // tva produs pe toal rotunjit
             'data' => now(),
             'compid' => $compId,
             'detkit' => '0',
