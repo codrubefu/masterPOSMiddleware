@@ -158,7 +158,7 @@ class TrzFactBf extends Model
      * @param array $data Request data from POS system
      * @return static
      */
-    public static function createFromPOS(array $data)
+    public static function createFromPOS(array $data, $totalWithoutVat)
     {
 
 
@@ -167,30 +167,19 @@ class TrzFactBf extends Model
         $maxNrFact = self::max('nrfact') ?? 0;
         $nrfact = $maxNrFact + 1;
         $factNo = str_pad($nrfact, 5, '0', STR_PAD_LEFT);
-
-        $totalWithoutVat = array_sum(array_map(function ($i) {
-                return $i['unitPriceWithoutVat']* $i['qty'];
-            }, $data['items'] ?? []));
-
-        $totalVat = array_sum(array_map(function ($i) {
-                return $i['tva'] * $i['qty'];
-            }, $data['items'] ?? []));
-
-        $total = $totalWithoutVat + $totalVat;
-
         $dataToAdd = [
             'idfirma' => 1,
             'nrfactfisc' => ' ',
             'nrdep' => 1,
             'nrgest' => $data['items'][0]['product']['gest'],
             'idcl' => $data['customer']['id'] ?? null,
-            'stotalron' => $totalWithoutVat, // Subtotal before VAT total valoare2
+            'stotalron' => round($totalWithoutVat, 2), // Subtotal before VAT
             'redabs' => null,
             'redproc' => null,
-            'tva' => $totalVat, //valoare tva suma lui tva2
+            'tva' => round($data['subtotal'] - $totalWithoutVat, 2), //valoare tva
             'cotatva' => 1,
-            'totalron' => $total, // Total amount suma de stolal plus tva2
-            'sold' => $total,  // cu tva
+            'totalron' => round($data['subtotal'], 2), // Total amount
+            'sold' => $data['subtotal'] ,  // cu tva
             'itotalron' => 0.00, // Total cu tva
             'itotaleur' => null,
             'itotalusd' => null,
@@ -215,6 +204,7 @@ class TrzFactBf extends Model
             'costtot' => 0,
             'avans' => false,
         ];
+        
         return parent::create($dataToAdd);
     }
 
