@@ -220,8 +220,8 @@ class TrzCfe extends Model
             'nrbontrzcfeaux' => null,
             'idlogin' => 0,
             'userlogin' => null,
-            'numerar' => null, // $data['numerarAmount'] ?? 
-            'card' => null, // $data['cardAmount']
+            'numerar' =>  $data['numerarAmount'] ?? 0,
+            'card' =>  $data['cardAmount'] ?? 0,
             'nrnp' => null,
             'datac' => now(),
             'tichete' => 0.00,
