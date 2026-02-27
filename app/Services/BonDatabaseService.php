@@ -27,6 +27,8 @@ class BonDatabaseService
                 'tax1' => 0,
                 'tax2' => 0,
                 'tax3' => 0,
+                'grupa' => 'ZZ-AMBALAJE',
+                'clasa' => 'ZZ-AMBALAJE',
             ],
             'qty' => 1,
             'unitPrice' => 0.50,
@@ -42,6 +44,8 @@ class BonDatabaseService
                 'tax1' => 0,
                 'tax2' => 0,
                 'tax3' => 0,
+                'grupa' => 'ZZ-AMBALAJE',
+                'clasa' => 'ZZ-AMBALAJE',
             ],
             'qty' => 1,
             'unitPrice' => 0.30,
@@ -57,6 +61,8 @@ class BonDatabaseService
                 'tax1' => 0,
                 'tax2' => 0,
                 'tax3' => 0,
+                'grupa' => 'ZZ-AMBALAJE',
+                'clasa' => 'ZZ-AMBALAJE',
             ],
             'qty' => 1,
             'unitPrice' => 0.20,
@@ -96,7 +102,7 @@ class BonDatabaseService
             $gest = (int)($item['product']['gest'] ?? 0);
             $grouped[$gest][] = $item;
         }
-
+        $gestiuni = count($grouped);
         foreach ($grouped as $gest => $dept) {
 
             $partial['subtotal'] = array_sum(array_map(function ($i) {
@@ -111,8 +117,21 @@ class BonDatabaseService
             $partial['cashGiven'] = $data['cashGiven'];
             $partial['change'] = $data['change'];
             $partial['pendingPayment'] = $data['pendingPayment'] ?? null;
+            // Distribute $partial['total'] between card and numerar in the same proportion as provided
+            $cardAmount = $data['cardAmount'] ?? 0;
+            $numerarAmount = $data['numerarAmount'] ?? 0;
+            $total = $partial['total'] ?? 0;
+            $sum = $cardAmount + $numerarAmount;
+            if ($sum > 0 && $total > 0) {
+                $partial['cardAmount'] = round($total * ($cardAmount / $sum), 2);
+                $partial['numerarAmount'] = $total - $partial['cardAmount'];
+            } else {
+                $partial['cardAmount'] = $cardAmount;
+                $partial['numerarAmount'] = $numerarAmount;
+            }
 
-            $trzCfePOS = TrzCfe::createFromPOS($partial, $gest, $nrBonfintPOS);
+
+            $trzCfePOS = TrzCfe::createFromPOS($partial, $gest, $nrBonfintPOS,$gestiuni);
             $nrBon = $trzCfePOS->nrbonfint ?? null;
             $this->saveDetCf($partial, $nrBon, true);
             $totalWithoutVat = $this->calculateTotalWithoutVat($partial['items']);
