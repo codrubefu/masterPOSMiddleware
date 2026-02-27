@@ -103,12 +103,15 @@ class BonDatabaseService
             $grouped[$gest][] = $item;
         }
         $gestiuni = count($grouped);
+
+        
         foreach ($grouped as $gest => $dept) {
 
+            $items = $this->calculate($dept);
             $partial['subtotal'] = array_sum(array_map(function ($i) {
                 return $i['unitPrice'] * $i['qty'];
             }, $dept));
-            $partial['items'] = $dept;
+            $partial['items'] = $items;
             $partial['customer'] = $data['customer'];
             $partial['type'] = $data['type'];
             $partial['totalDiscount'] = 0; // Or recalculate if needed
@@ -143,21 +146,42 @@ class BonDatabaseService
         }
     }
 
-    protected function calculateTotalWithoutVat($dataItems)
+    public function calculate(array $items): array
     {
-        $total = 0;
-        foreach ($dataItems as $item) {
-            if ($item['product']['departament'] == 1) {
-                $tva = $item['product']['tax1'];
-            } elseif ($item['product']['departament'] == 2) {
-                $tva = $item['product']['tax2'];
-            } elseif ($item['product']['departament'] == 3) {
-                $tva = $item['product']['tax3'];
+        foreach ($items as &$item) {
+        // Calculate VAT based on department
+            $tva = 0.21; // Default VAT rate
+            if (isset($item['product']['departament'])) {
+                if ($item['product']['departament'] == 1) {
+                    $tva = $item['product']['tax1'] ?? 0.21;
+                } elseif ($item['product']['departament'] == 2) {
+                    $tva = $item['product']['tax2'] ?? 0.21;
+                } elseif ($item['product']['departament'] == 3) {
+                    $tva = $item['product']['tax3'] ?? 0.21;
+                }
             }
-            $total += $item['unitPrice'] * $item['qty'] / (1 + $tva);
+            $price = $item['product']['price'] ?? 0;
+            $qty = $item['qty'] ?? 1;
+            $valoare = $price * $qty;
+            $priceWithoutVat = self::getPriceWithoutVat($price, $tva);
+
+            $item['qty'] = $qty;
+            $item['valoare'] = $priceWithoutVat * $qty;
+            $item['tva'] =  $valoare - ($priceWithoutVat * $qty);
+            $item['preturondisc'] = $priceWithoutVat;
+            $item['cotatva'] = $tva;
+
+            $item['valoare2'] = round($item['valoare'], 2);
+            $item['tva2'] = round($item['tva'], 2);
         }
-        return round($total, 10);
+        return $items;
     }
+
+    protected function calculateTotalWithoutVat($dataItems)
+        {
+            // Use array_column to extract 'valoare2' and sum for performance and clarity
+            return round(array_sum(array_column($dataItems, 'valoare2')), 2);
+        }
 
     protected function saveDetCf($data, $nrBon, $usePOSModel = false)
     {
@@ -206,5 +230,10 @@ class BonDatabaseService
         }
 
         return $itemsWithSgr;
+    }
+
+    protected static function getPriceWithoutVat($priceWithVat, $vatRate = 0.21)
+    {
+        return round($priceWithVat / (1 + $vatRate), 10);
     }
 }

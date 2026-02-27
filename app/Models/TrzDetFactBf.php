@@ -101,30 +101,6 @@ class TrzDetFactBf extends Model
     {
         $compId = 'AriPos' . ($data['casa'] ?? 1);
 
-        // Calculate VAT based on department
-        $tva = 0.21; // Default VAT rate
-        if (isset($data['product']['departament'])) {
-            if ($data['product']['departament'] == 1) {
-                $tva = $data['product']['tax1'] ?? 0.21;
-            } elseif ($data['product']['departament'] == 2) {
-                $tva = $data['product']['tax2'] ?? 0.21;
-            } elseif ($data['product']['departament'] == 3) {
-                $tva = $data['product']['tax3'] ?? 0.21;
-            }
-        }
-
-        $price = $data['product']['price'] ?? 0;
-        $qty = $data['qty'] ?? 0;
-        $valoare = $price * $qty;
-
-        if ($data['product']['departament'] == 1) {
-            $tva = $data['product']['tax1'];
-        } elseif ($data['product']['departament'] == 2) {
-            $tva = $data['product']['tax2'];
-        } elseif ($data['product']['departament'] == 3) {
-            $tva = $data['product']['tax3'];
-        }
-        $priceWithoutVat = self::getPriceWithoutVat($price, $tva);
         $dataValues = [
             'idfirma' => 1,
             'nrfact' => $nrFact,
@@ -132,20 +108,21 @@ class TrzDetFactBf extends Model
             'clasa' => $data['product']['clasa'] ?? null,
             'grupa' => $data['product']['grupa'] ?? null,
             'art' => $data['product']['name'] ?? null,
-            'cant' => $qty,
-            'cantf' => $qty,
+            'cant' => $data['qty'] ?? 1,
+            'cantf' => $data['qty'] ?? 1,
             'pretueur' => null,
-            'preturon' => $priceWithoutVat, // pret pe unitate fara tva 10 decimal
+            'preturon' => $data['preturondisc'] ?? null, // pret pe unitate fara tva 10 decimal
             'redabs' => null,
             'redproc' => 0.00,
-            'valoare' => $priceWithoutVat * $qty, // total fara tva
-            'tva' => $valoare - ($priceWithoutVat * $qty), //  tva produs pe toal
+            'valoare' => $data['valoare'] ?? null, // total fara tva
+            'tva' => $data['tva'] ?? null, //  tva produs pe toal
             'data' => now(),
             'compid' => $compId,
             'detkit' => '0',
-            'preturondisc' => $priceWithoutVat,
-            'cotatva' => $tva, // 0.21
+            'preturondisc' => $data['preturondisc'] ?? null,
+            'cotatva' => $data['cotatva'] ?? null, // 0.21
         ];
+
         return static::create($dataValues);
     }
 
