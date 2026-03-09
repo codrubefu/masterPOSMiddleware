@@ -215,8 +215,8 @@ class BonService
 
     public function isPaymentDone($casa, $bonNo=null): bool
     {
-        $acordFiscal = AcordFiscal::where('idnr', $casa)->orderBy('acordFiscalId', 'desc')->first();
-        $bon = $this->casaFiles[$casa]['path'].'\BONERR\bonerr'.$acordFiscal->code .'.txt';
+        $acordFiscal = AcordFiscal::where('code', $casa)->orderBy('acordFiscalId', 'desc')->first();
+        $bon = $this->casaFiles[$casa]['path'].'\BONERR\bonerr'.$acordFiscal->idnr .'.txt';
        
 
         if( !file_exists($bon) ){
