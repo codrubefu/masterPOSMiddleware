@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AcordFiscal extends Model
 {
-    protected $table = 'erp.dbo.acordFiscal';
+    protected $table = 'dbo.acordFiscal';
     public $timestamps = false;
     protected $primaryKey = 'acordFiscalId';
     protected $fillable = [
