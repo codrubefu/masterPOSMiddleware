@@ -82,7 +82,6 @@ class AnafService
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
-                throw new \Exception('ANAF API request failed: ' . $response->status());
             }
         } catch (\Exception $e) {
             Log::error('ANAF API Exception', ['message' => $e->getMessage()]);

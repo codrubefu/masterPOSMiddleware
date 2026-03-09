@@ -22,7 +22,7 @@ class CustomerController extends Controller
             if (!isset($anafData['found']) || empty($anafData['found'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Customer not found',
+                    'message' => 'Clientul nu a fost găsit în baza de date și nici în ANAF',
                     'data' => null,
                 ], 404);
             }
