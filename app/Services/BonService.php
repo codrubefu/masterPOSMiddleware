@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Company;
+use App\Models\AcordFiscal;
 
 class BonService
 {
@@ -215,11 +215,9 @@ class BonService
 
     public function isPaymentDone($casa, $bonNo=null): bool
     {
-        $company = Company::first();
-        $bon = $this->casaFiles[$casa]['path'].'\BONERR\bonerr'.$company->nrbfdude .'.txt';
-        if( !file_exists($bon) ){
-            $bon = $this->casaFiles[$casa]['path'].'\BONERR\bonerr'.$bonNo .'.txt';
-        }
+        $acordFiscal = AcordFiscal::where('idnr', $casa)->orderBy('acordFiscalId', 'desc')->first();
+        $bon = $this->casaFiles[$casa]['path'].'\BONERR\bonerr'.$acordFiscal->code .'.txt';
+       
 
         if( !file_exists($bon) ){
             return false;
