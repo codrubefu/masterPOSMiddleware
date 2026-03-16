@@ -59,7 +59,6 @@ class PaymentsController extends Controller
     public function payment(Request $request, BonDatabaseService $bonDatabaseService)
     {
             $this->bonService->writeBonFinal($request->all());
-            $bonDatabaseService->save($request);
             $company = Company::first();
             
             return response()->json([
@@ -71,6 +70,11 @@ class PaymentsController extends Controller
                 ]
             ], 200);
        
+    }
+
+    public function saveBonInDatabase(Request $request, BonDatabaseService $bonDatabaseService)
+    {
+        $bonDatabaseService->save($request);
     }
 
     public function isPaymentDone(Request $request, BonService $bonService)

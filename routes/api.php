@@ -53,6 +53,8 @@ Route::get('/config', [ConfigController::class, 'config']);
 // Reset route (public)
 Route::get('/reset', [PaymentsController::class, 'reset']);
 
+Route::post('/save-bon-in-database', [PaymentsController::class, 'saveBonInDatabase']);
+
 // Protected API routes that require secret
 Route::middleware('api.secret')->group(function () {
     
