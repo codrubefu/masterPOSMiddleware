@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Services\AnafService;
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
@@ -17,13 +19,35 @@ class CustomerController extends Controller
         $client = Client::findByTaxIdentifier($id);
 
         if (!$client) {
-            $anafService = new \App\Services\AnafService();
-            $ping = $anafService->ping();
-            $anafData = $anafService->verifyVatStatus($id);
+            $anafService = new AnafService();
+
+            if (!$anafService->ping()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'ANAF nu este disponibil momentan',
+                    'data' => null,
+                ], 500);
+            }
+
+            try {
+                $anafData = $anafService->verifyVatStatus($id);
+            } catch (\Throwable $exception) {
+                Log::error('ANAF lookup failed', [
+                    'id' => $id,
+                    'message' => $exception->getMessage(),
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Nu s-a putut verifica clientul in ANAF',
+                    'data' => null,
+                ], 500);
+            }
+
             if (!isset($anafData['found']) || empty($anafData['found'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => $ping ? 'Clientul nu a fost găsit în baza de date și nici în ANAF' : 'Clientul nu a fost găsit în baza de date și ANAF nu este disponibil',
+                    'message' => 'Clientul nu a fost găsit în baza de date și nici în ANAF',
                     'data' => null,
                 ], 404);
             }

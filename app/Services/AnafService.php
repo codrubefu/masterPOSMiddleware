@@ -6,6 +6,7 @@ use App\Models\Client;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
+use RuntimeException;
 
 class AnafService
 {
@@ -82,10 +83,12 @@ class AnafService
                     'status' => $response->status(),
                     'body' => $response->body()
                 ]);
+
+                throw new RuntimeException('ANAF service returned an unsuccessful response.');
             }
         } catch (\Exception $e) {
             Log::error('ANAF API Exception', ['message' => $e->getMessage()]);
-            throw $e;
+            throw new RuntimeException('Unable to verify VAT status with ANAF.', 0, $e);
         }
     }
 
