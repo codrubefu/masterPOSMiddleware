@@ -89,6 +89,31 @@ class AnafService
         }
     }
 
+    public function ping()
+    {
+        $this->applyRateLimit();
+
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+            ])->get(self::ANAF_API_URL );
+
+            if ($response->successful()) {
+                Log::info('ANAF API Ping successful');
+                return true;
+            } else {
+                Log::error('ANAF API Ping failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                return false;
+            }
+        } catch (\Exception $e) {
+            Log::error('ANAF API Ping Exception', ['message' => $e->getMessage()]);
+            return false;
+        }
+    }
+
     /**
      * Register or update client from ANAF data
      *

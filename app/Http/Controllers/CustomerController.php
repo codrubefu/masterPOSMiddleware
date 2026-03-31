@@ -18,11 +18,12 @@ class CustomerController extends Controller
 
         if (!$client) {
             $anafService = new \App\Services\AnafService();
+            $ping = $anafService->ping();
             $anafData = $anafService->verifyVatStatus($id);
             if (!isset($anafData['found']) || empty($anafData['found'])) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Clientul nu a fost găsit în baza de date și nici în ANAF',
+                    'message' => $ping ? 'Clientul nu a fost găsit în baza de date și nici în ANAF' : 'Clientul nu a fost găsit în baza de date și ANAF nu este disponibil',
                     'data' => null,
                 ], 404);
             }
