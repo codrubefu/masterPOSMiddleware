@@ -221,7 +221,7 @@ class Client extends Model
             'adresa1' => $data['date_generale']['adresa'],
             'adresa2' => ' ',
             'oras' => $data['adresa_sediu_social']['sdenumire_Localitate'],
-            'judet' => Judet::findByDen($data['adresa_sediu_social']['scod_Judet'])->idjudet ?? null,
+            'judet' => Judet::findByEtrsp($data['adresa_sediu_social']['scod_Judet'])->idjudet ?? null,
             'tara' => 1,
             'reg' => ' ',
             'cp' => ' ',
