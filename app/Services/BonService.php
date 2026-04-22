@@ -161,7 +161,7 @@ class BonService
         $itemsContent = implode("\n", $lines);
         if(isset($data['customer']['type']) && $data['customer']['type']=='pj'){
             $template = $this->loadTemplate('bonfinalpj.txt');
-            $finalContent = sprintf($template, $itemsContent,$code,$data['customer']['cnpcui'] ?? '', $data['customer']['lastName'] ?? '');
+            $finalContent = sprintf($template, $itemsContent,$code,$data['customer']['cnpcui'] ?? '', substr($data['customer']['lastName'],0,30) ?? '');
             
         }
         else{
