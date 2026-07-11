@@ -7,6 +7,8 @@ use App\Services\BonService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\Company;
+use App\Models\TrzCfePOSSent;
+use App\Models\TrzDetCfPOSSent;
 
 class PaymentsController extends Controller
 {
@@ -58,6 +60,7 @@ class PaymentsController extends Controller
      */
     public function payment(Request $request, BonDatabaseService $bonDatabaseService)
     {
+            $this->saveSentBackup($request->all());
             $this->bonService->writeBonFinal($request->all());
             $company = Company::first();
             
@@ -70,6 +73,16 @@ class PaymentsController extends Controller
                 ]
             ], 200);
        
+    }
+
+    protected function saveSentBackup(array $data): void
+    {
+        $trzCfeSent = TrzCfePOSSent::createFromPOS($data);
+        $nrBonSent = $trzCfeSent->nrbonfint ?? null;
+
+        foreach ($data['items'] as $item) {
+            TrzDetCfPOSSent::createDetail($item, $data['customer'], $nrBonSent);
+        }
     }
 
     public function saveBonInDatabase(Request $request, BonDatabaseService $bonDatabaseService)
