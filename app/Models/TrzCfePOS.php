@@ -165,7 +165,7 @@ class TrzCfePOS extends Model
             }
         }
         $compId = 'AriPos'.$data['casa'];
-        return static::create([
+        return parent::create([
             'idfirma' => 1,
             'idcl' => $data['customer']['id'] ?? $data['idcl'] ?? 1,
             'stotalron' => $data['subtotal'] ?? $data['subtotal'] ?? 0,

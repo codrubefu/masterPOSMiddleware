@@ -79,10 +79,10 @@ class BonDatabaseService
         $data = $request->all();
         $data['items'] = $this->deleteSGR($data['items'] ?? []);
         $data['items'] = $this->addSgr($data['items'] ?? []);
-        $trzCfe = TrzCfePOS::createFromPOS($data);
+        TrzCfePOS::createFromPOS($data);
+        $trzCfe = TrzCfePOS::lastSaved();
         $nrBon = $trzCfe->nrbonfint ?? null;
         $this->saveDetCf($data, $nrBon);
-
         $this->savePartial($data, $trzCfe->nrbonfint ?? null);
     }
 
