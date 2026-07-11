@@ -7,6 +7,8 @@ use App\Models\TrzCfe;
 use Illuminate\Http\Request;
 use App\Models\TrzCfePOS;
 use App\Models\TrzDetCfPOS;
+use App\Models\TrzCfePOSSent;
+use App\Models\TrzDetCfPOSSent;
 use App\Models\TrzDetCf;
 use App\Models\TrzFactBf;
 use App\Models\TrzDetFactBf;
@@ -79,11 +81,23 @@ class BonDatabaseService
         $data = $request->all();
         $data['items'] = $this->deleteSGR($data['items'] ?? []);
         $data['items'] = $this->addSgr($data['items'] ?? []);
-        TrzCfePOS::createFromPOS($data);
-        $trzCfe = TrzCfePOS::lastSaved();
+        $trzCfe = TrzCfePOS::createFromPOS($data);
         $nrBon = $trzCfe->nrbonfint ?? null;
         $this->saveDetCf($data, $nrBon);
+
+        $this->saveSentBackup($data);
+
         $this->savePartial($data, $trzCfe->nrbonfint ?? null);
+    }
+
+    protected function saveSentBackup(array $data): void
+    {
+        $trzCfeSent = TrzCfePOSSent::createFromPOS($data);
+        $nrBonSent = $trzCfeSent->nrbonfint ?? null;
+
+        foreach ($data['items'] as $item) {
+            TrzDetCfPOSSent::createDetail($item, $data['customer'], $nrBonSent);
+        }
     }
 
     protected function saveFacturaDet($data, $fact)
