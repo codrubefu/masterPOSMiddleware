@@ -1,5 +1,5 @@
 # Imagine de bază PHP cu Apache
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 # Instalare dependințe de bază
 RUN apt-get update && apt-get install -y \
