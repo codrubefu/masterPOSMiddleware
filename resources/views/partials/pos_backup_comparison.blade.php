@@ -20,13 +20,13 @@
         <p class="empty">Nu sunt diferente pentru ziua selectata.</p>
     @endif
 
-    @if (count($missingFromBackup) > 0)
-        <h3>Exista in {{ $mainLabel }}, lipsesc din {{ $backupLabel }}</h3>
-        @include('partials.pos_backup_table', ['rows' => $missingFromBackup])
-    @endif
-
     @if (count($missingFromMain) > 0)
         <h3>Exista in {{ $backupLabel }}, lipsesc din {{ $mainLabel }}</h3>
         @include('partials.pos_backup_table', ['rows' => $missingFromMain])
+    @endif
+
+    @if (count($missingFromBackup) > 0)
+        <h3>Exista in {{ $mainLabel }}, lipsesc din {{ $backupLabel }}</h3>
+        @include('partials.pos_backup_table', ['rows' => $missingFromBackup])
     @endif
 </section>
