@@ -20,7 +20,7 @@ class BonDatabaseService
         'pet' => [
             'product' => [
                 'upc' => '1112',
-                'name' => 'Garantie SGR Pet',
+                'name' => 'Garantie SGR PET',
                 'price' => 0.50,
                 'gest' => 1,
                 'departament' => 3,
